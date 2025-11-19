@@ -252,6 +252,7 @@ linters:
         - git.wntrmute.dev/kyle/goutils/lib.Err
         - git.wntrmute.dev/kyle/goutils/lib.Errx
         - (*git.wntrmute.dev/kyle/goutils/sbuf.Buffer).Write
+        - (*github.com/spf13/cobra.Command).MarkFlagRequired
         - github.com/spf13/viper.BindPFlag
 
     exhaustive:

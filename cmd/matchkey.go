@@ -17,7 +17,7 @@ var matchKeyCommand = &cobra.Command{
 correspond to each other. Returns non-zero on mismatch unless --verbose is set
 and a match is found.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		cert, err := certlib.LoadCertificate(viper.GetString("ca-file"))
+		cert, err := certlib.LoadCertificate(viper.GetString("cert-file"))
 		die.If(err)
 
 		priv, err := certlib.LoadPrivateKey(viper.GetString("key-file"))

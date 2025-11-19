@@ -19,14 +19,7 @@ var verifyCommand = &cobra.Command{
 	Long: `Verify certificate chains for one or more targets. Targets can be
 TLS endpoints (host:port) or certificate files. You can supply custom root CA
 and intermediate bundles. Optionally check revocation.
-
-Flags:
-- --ca-file: path to a root CA bundle (PEM)
-- --intermediates-file: path to an intermediate bundle (PEM)
-- --force-intermediate-bundle: always load the intermediate bundle even if
-  intermediates are provided by the peer
-- --check-revocation: attempt revocation checks
-- --verbose: print progress and results`,
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
 			roots, ints *x509.CertPool
@@ -40,7 +33,7 @@ Flags:
 			Verbose:            viper.GetBool("verbose"),
 		}
 
-		caFile := viper.GetString("ca-file")
+		caFile := viper.GetString("ca")
 		if caFile != "" {
 			if viper.GetBool("verbose") {
 				fmt.Printf("loading CA certificates from %s\n", caFile)

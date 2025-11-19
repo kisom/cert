@@ -20,15 +20,15 @@ var stealchainCommand = &cobra.Command{
 certificate chain to a local PEM file named <host>.pem.
 
 Use --sni-name to override the SNI name used for the TLS handshake. Root CAs
-are taken from --ca-file if provided, otherwise from the system pool.`,
+are taken from --ca if provided, otherwise from the system pool.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var roots *x509.CertPool
 
 		tcfg, err := tlsConfig()
 		die.If(err)
 
-		if viper.GetString("ca-file") != "" {
-			roots, err = certlib.LoadPEMCertPool(viper.GetString("ca-file"))
+		if viper.GetString("ca") != "" {
+			roots, err = certlib.LoadPEMCertPool(viper.GetString("ca"))
 			die.If(err)
 		} else {
 			roots, err = x509.SystemCertPool()

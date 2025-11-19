@@ -79,12 +79,15 @@ Each subcommand has `--help`. Global flags apply to all commands.
 Global flags (from `cmd/config.go`):
 
 - --config string                  Path to config file (default: $HOME/.config/goutils/cert.yaml)
-- -c, --ca-file string            CA certificate bundle file (PEM)
-- -d, --display-mode string       Hex display mode for SKI (lower|upper) (default: lower)
-- -i, --intermediates-file string Intermediate certificate bundle (PEM)
-- -k, --skip-verify               Skip certificate verification
-- -t, --strict-tls                Use strict TLS settings
-- -v, --verbose                   Verbose output
+- --ca string                      CA certificate bundle file (PEM)
+- -d, --display-mode string        Hex display mode for SKI (lower|upper) (default: lower)
+- -i, --intermediates-file string  Intermediate certificate bundle (PEM)
+- -k, --skip-verify                Skip certificate verification
+- -t, --strict-tls                 Use strict TLS settings
+- -v, --verbose                    Verbose output
+
+Notes:
+- --skip-verify and --strict-tls are mutually exclusive.
 
 Subcommands:
 
@@ -98,26 +101,52 @@ Subcommands:
   files. With `--leaf-only`, print only the leaf when connecting to a host.
   Local flag: `-l, --leaf-only`.
 
+- cert bundler
+  Create archives of certificate chains from a YAML configuration file. See the
+  long help for the expected YAML structure and examples.
+  Local flags: `-f, --config-file` (default: bundle.yaml), `-o, --output` (output directory; default: pkg).
+
 - cert stealchain <host:port> [more ...]
   Retrieve and save the presented certificate chain from one or more TLS
-  endpoints to `<host>.pem` files. Honors `--ca-file`; uses system pool if not
+  endpoints to `<host>.pem` files. Honors `--ca`; uses system pool if not
   provided. Local flag: `-s, --sni-name` to override SNI.
 
 - cert matchkey -c cert.pem -k key.pem
   Check whether the given certificate and private key correspond. Returns
   non‑zero on mismatch unless `--verbose` is set and a match is found.
-  Local flag: `-k, --key-file`.
+  Local flags: `-c, --cert-file`, `-k, --key-file` (both required).
 
 - cert ski <key-or-cert> [more ...]
   Display the Subject Key Identifier (SKI) for one or more keys/certs. With
   `--should-match`, compares all SKIs and warns on mismatch. Honors
   `--display-mode` for hex formatting. Local flag: `-m, --should-match`.
 
+- cert pem <file>
+  Encode or decode PEM files. Provide exactly one filename.
+  - To encode raw binary to PEM, pass `-t, --pem-type` (e.g. CERTIFICATE) and the tool writes the PEM to stdout.
+  - To decode a PEM file to raw DER, pass `-b, --binary-out <out-file>` and the tool writes the decoded bytes to the given file.
+  Local flags: `-b, --binary-out`, `-t, --pem-type` (exactly one of these is required; they are mutually exclusive).
+
 - cert verify <host:port|cert.pem> [more ...]
   Verify certificate chains for hosts or cert files. Supports custom root and
   intermediate bundles, optional forced intermediate loading, optional
   revocation checks, and verbose progress.
   Local flags: `-f, --force-intermediate-bundle`, `-r, --check-revocation`.
+  Exits with status 1 if any verification fails.
+
+- cert expiry <cert.pem> [more ...]
+  Display certificate expiry dates for one or more certificate files or hosts.
+  Local flags:
+  - `-p, --leeway <duration>`: treat certificates expiring within this leeway as expiring soon (e.g. 1h30m).
+  - `-q, --expiring-only`: only display certificates expiring soon.
+
+- cert ca-signed <cert.pem> [more ...]
+  Check whether a certificate is signed by the specified CA. Requires a single CA certificate via the global `--ca` option.
+  Results are printed per input as one of:
+  - SELF-SIGNED
+  - INVALID
+  - OK (expires <date>)
+  Exit status is non‑zero if no certificates are provided.
 
 - cert version
   Print the embedded version string.
@@ -132,8 +161,10 @@ Configuration is managed via Cobra flags and Viper. Behavior is influenced by:
 - Environment variables: Viper's `AutomaticEnv()` is enabled, so any of the
   flag names may be provided as environment variables (uppercase, with dashes
   typically replaced by underscores by the shell when exporting). Examples:
-  - CA_FILE, INTERMEDIATES_FILE, DISPLAY_MODE, SKIP_VERIFY, STRICT_TLS, VERBOSE,
-    LEAF_ONLY, SHOULD_MATCH, SNI_NAME, FORCE_INTERMEDIATE_BUNDLE, CHECK_REVOCATION
+  - CA, INTERMEDIATES_FILE, DISPLAY_MODE, SKIP_VERIFY, STRICT_TLS, VERBOSE,
+    LEAF_ONLY, LEEWAY, EXPIRING_ONLY, CERT_FILE, KEY_FILE, SHOULD_MATCH, SNI_NAME,
+    FORCE_INTERMEDIATE_BUNDLE, CHECK_REVOCATION, CONFIG_FILE, OUTPUT, BINARY_OUT,
+    PEM_TYPE
   Note: Viper's default behavior is case‑insensitive lookup; exact mapping may
   depend on your environment.
 - Config file: by default, `$HOME/.config/goutils/cert.yaml` if present. You can
@@ -141,7 +172,7 @@ Configuration is managed via Cobra flags and Viper. Behavior is influenced by:
 
 Example config (`~/.config/goutils/cert.yaml`):
 
-  ca-file: /etc/ssl/certs/ca-bundle.crt
+  ca: /etc/ssl/certs/ca-bundle.crt
   intermediates-file: /path/to/intermediates.pem
   display-mode: lower
   skip-verify: false
@@ -149,7 +180,13 @@ Example config (`~/.config/goutils/cert.yaml`):
   verbose: false
   should-match: false
   leaf-only: false
+  leeway: 0s
+  expiring-only: false
   sni-name: ""
+  config-file: bundle.yaml
+  output: pkg
+  binary-out: ""
+  pem-type: CERTIFICATE
   force-intermediate-bundle: false
   check-revocation: false
 
@@ -193,7 +230,9 @@ Top‑level files and directories:
   - `root.go` — root command and CLI description.
   - `config.go` — global flags, Viper config/env setup, TLS helpers.
   - `dump.go` — `cert dump`.
+  - `bundler.go` — `cert bundler`.
   - `matchkey.go` — `cert matchkey`.
+  - `pem.go` — `cert pem`.
   - `ski.go` — `cert ski`.
   - `stealchain.go` — `cert stealchain`.
   - `tlsinfo.go` — `cert tlsinfo`.

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"cert/tlsinfo"
 	"context"
 	"crypto/tls"
 	"os"
@@ -11,6 +10,8 @@ import (
 	"git.wntrmute.dev/kyle/goutils/lib"
 	"git.wntrmute.dev/kyle/goutils/lib/dialer"
 	"github.com/spf13/cobra"
+
+	"github.com/kisom/cert/tlsinfo"
 )
 
 var tlsInfoCommand = &cobra.Command{

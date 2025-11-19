@@ -157,7 +157,7 @@ Notes
 				viper.GetString("output-dir"))
 		}
 
-		err := bundler.Run(viper.GetString("config-file"), viper.GetString("output-dir"))
+		err := bundler.Run(viper.GetString("config-file"), viper.GetString("output"))
 		die.If(err)
 
 		if viper.GetBool("verbose") {

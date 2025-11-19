@@ -91,7 +91,7 @@ func init() {
 	expiryCommand.Flags().DurationP("leeway", "p", 0, "leeway for certificate expiry checks (e.g. 1h30m")
 	expiryCommand.Flags().BoolP("expiring-only", "q", false, "only display certificates expiring soon")
 	matchKeyCommand.Flags().StringP("cert-file", "c", "", "certificate file to match (PEM or DER format")
-	matchKeyCommand.Flags().StringP("key-file", "k", "", "key file to match")
+	matchKeyCommand.Flags().StringP("key-file", "p", "", "key file to match")
 	pemCommand.Flags().StringP("binary-out", "b", "", "file to write extracted binary data from a PEM file")
 	pemCommand.Flags().StringP("pem-type", "t", "CERTIFICATE", "PEM type for output")
 	serialCommand.Flags().BoolP("numeric", "n", false, "display serial numbers as integers")

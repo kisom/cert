@@ -24,10 +24,12 @@ var genCSRCommand = &cobra.Command{
 			priv, err = certlib.LoadPrivateKey(viper.GetString("gencsr-key-file"))
 			die.If(err)
 		} else {
+			var out []byte
+
 			_, priv, err = cfg.KeySpec.Generate()
 			die.If(err)
 
-			out, err := certlib.ExportPrivateKeyPEM(priv)
+			out, err = certlib.ExportPrivateKeyPEM(priv)
 			die.If(err)
 			fmt.Println(string(out))
 		}

@@ -14,7 +14,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-func signCSR(cert *x509.Certificate, priv crypto.PrivateKey, cfg *certgen.CertificateRequest, path string) (*x509.Certificate, error) {
+func signCSR(
+	cert *x509.Certificate,
+	priv crypto.PrivateKey,
+	cfg *certgen.CertificateRequest,
+	path string,
+) (*x509.Certificate, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err

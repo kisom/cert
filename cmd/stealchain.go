@@ -8,7 +8,7 @@ import (
 
 	"git.wntrmute.dev/kyle/goutils/certlib"
 	"git.wntrmute.dev/kyle/goutils/die"
-	"git.wntrmute.dev/kyle/goutils/lib"
+	"git.wntrmute.dev/kyle/goutils/lib/fetch"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -48,7 +48,7 @@ are taken from --ca if provided, otherwise from the system pool.`,
 				fmt.Printf("[+] fetching chain for %s...\n", site)
 			}
 
-			chains, err = lib.GetCertificateChain(site, tcfg)
+			chains, err = fetch.GetCertificateChain(site, tcfg)
 			die.If(err)
 
 			var chain []byte

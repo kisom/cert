@@ -1,3 +1,7 @@
 # Added by goreleaser init:
 cert
 dist/
+*.cer
+*.crt
+*.csr
+*.pem

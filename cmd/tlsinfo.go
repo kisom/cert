@@ -9,6 +9,7 @@ import (
 	"git.wntrmute.dev/kyle/goutils/certlib/hosts"
 	"git.wntrmute.dev/kyle/goutils/die"
 	"git.wntrmute.dev/kyle/goutils/lib"
+	"git.wntrmute.dev/kyle/goutils/lib/dialer"
 	"github.com/spf13/cobra"
 )
 
@@ -28,10 +29,10 @@ not validate the peer.`,
 			}
 
 			// Use proxy-aware TLS dialer; skip verification as before
-			conn, err := lib.DialTLS(
+			conn, err := dialer.DialTLS(
 				context.Background(),
 				host.String(),
-				lib.DialerOpts{TLSConfig: &tls.Config{InsecureSkipVerify: true}}, // #nosec G402
+				dialer.Opts{TLSConfig: &tls.Config{InsecureSkipVerify: true}}, // #nosec G402
 			) // #nosec G402
 			die.If(err)
 

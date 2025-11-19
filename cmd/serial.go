@@ -6,6 +6,7 @@ import (
 
 	"git.wntrmute.dev/kyle/goutils/die"
 	"git.wntrmute.dev/kyle/goutils/lib"
+	"git.wntrmute.dev/kyle/goutils/lib/fetch"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -24,7 +25,7 @@ var serialCommand = &cobra.Command{
 		for _, arg := range args {
 			var cert *x509.Certificate
 
-			cert, err = lib.GetCertificate(arg, tcfg)
+			cert, err = fetch.GetCertificate(arg, tcfg)
 			if err != nil {
 				lib.Warn(err, "while parsing certificate from %s", arg)
 				continue

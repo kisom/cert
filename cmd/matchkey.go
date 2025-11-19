@@ -27,8 +27,8 @@ and a match is found.`,
 		if matched {
 			if viper.GetBool("verbose") {
 				fmt.Println("OK.")
-				return
 			}
+			return
 		}
 		fmt.Printf("No match (%s).\n", reason)
 		os.Exit(1)

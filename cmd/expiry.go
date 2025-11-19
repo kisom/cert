@@ -7,6 +7,7 @@ import (
 	"git.wntrmute.dev/kyle/goutils/certlib/verify"
 	"git.wntrmute.dev/kyle/goutils/die"
 	"git.wntrmute.dev/kyle/goutils/lib"
+	"git.wntrmute.dev/kyle/goutils/lib/fetch"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -22,7 +23,7 @@ var expiryCommand = &cobra.Command{
 		for _, target := range args {
 			var certs []*x509.Certificate
 
-			certs, err = lib.GetCertificateChain(target, tcfg)
+			certs, err = fetch.GetCertificateChain(target, tcfg)
 			if err != nil {
 				lib.Warn(err, "while parsing certificates")
 				continue

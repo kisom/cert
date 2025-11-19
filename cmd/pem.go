@@ -26,7 +26,7 @@ with -b.
 		fileData, err := os.ReadFile(path)
 		die.If(err)
 
-		if viper.GetString("pem-type") != "" {
+		if viper.IsSet("pem-type") && viper.GetString("pem-output") != "" {
 			block := &pem.Block{
 				Type:  viper.GetString("pem-type"),
 				Bytes: fileData,
@@ -39,7 +39,7 @@ with -b.
 		}
 
 		block, _ := pem.Decode(fileData)
-		err = os.WriteFile(viper.GetString("pem-output"), block.Bytes, 0644)
+		err = os.WriteFile(viper.GetString("binary-out"), block.Bytes, 0644)
 		die.If(err)
 	},
 }

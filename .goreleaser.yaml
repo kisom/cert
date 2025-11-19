@@ -18,6 +18,8 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X cert/cmd.Version={{.Version}}
     goos:
       - linux
       - windows

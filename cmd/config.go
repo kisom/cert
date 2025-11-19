@@ -103,4 +103,5 @@ func init() {
 	rootCommand.AddCommand(stealchainCommand)
 	rootCommand.AddCommand(tlsInfoCommand)
 	rootCommand.AddCommand(verifyCommand)
+	rootCommand.AddCommand(versionCommand)
 }

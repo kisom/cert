@@ -48,7 +48,7 @@ are taken from --ca-file if provided, otherwise from the system pool.`,
 				fmt.Printf("[+] fetching chain for %s...\n", site)
 			}
 
-			chains, err := lib.GetCertificateChain(site, tcfg)
+			chains, err = lib.GetCertificateChain(site, tcfg)
 			die.If(err)
 
 			var chain []byte

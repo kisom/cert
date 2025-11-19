@@ -69,7 +69,7 @@ func init() {
 	rootCommand.PersistentFlags().StringP("intermediates-file", "i", "",
 		"intermediate certificate bundle")
 	rootCommand.PersistentFlags().BoolP("skip-verify", "k", false, "skip certificate verification")
-	rootCommand.PersistentFlags().BoolP("strict-tls", "t", false, "use strict TLS settings")
+	rootCommand.PersistentFlags().Bool("strict-tls", false, "use strict TLS settings")
 	rootCommand.PersistentFlags().BoolP("verbose", "v", false, "verbose output")
 
 	// Bind persistent flags.

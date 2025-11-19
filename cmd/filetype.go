@@ -8,7 +8,7 @@ import (
 )
 
 var fileTypeCommand = &cobra.Command{
-	Use:   "fileitype",
+	Use:   "filetype",
 	Short: "Display the file type of an X.509 file",
 	Long:  `Display the file type of an X.509 file.`,
 	Run: func(cmd *cobra.Command, args []string) {

@@ -83,7 +83,8 @@ func init() {
 	rootCommand.MarkFlagsMutuallyExclusive("skip-verify", "strict-tls")
 
 	// Local flags follow.
-	bundlerCommand.Flags().StringP("config-file", "f", "bundle.yaml", "config file for bundler (default: bundle.yaml in current directory")
+	bundlerCommand.Flags().
+		StringP("config-file", "f", "bundle.yaml", "config file for bundler (default: bundle.yaml in current directory")
 	bundlerCommand.Flags().StringP("output", "o", "pkg", "output directory for generated files")
 	csrPubCommand.Flags().Bool("stdout", false, "write PEM-encoded CSR to stdout instead of a file")
 	dumpCommand.Flags().BoolP("leaf-only", "l", false, "only display the leaf certificate")

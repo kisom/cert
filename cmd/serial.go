@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"crypto/x509"
 	"fmt"
 
 	"git.wntrmute.dev/kyle/goutils/die"
@@ -21,7 +22,9 @@ var serialCommand = &cobra.Command{
 		mode := displayMode()
 
 		for _, arg := range args {
-			cert, err := lib.GetCertificate(arg, tcfg)
+			var cert *x509.Certificate
+
+			cert, err = lib.GetCertificate(arg, tcfg)
 			if err != nil {
 				lib.Warn(err, "while parsing certificate from %s", arg)
 				continue

@@ -1,4 +1,4 @@
-module cert
+module github.com/kisom/cert
 
 go 1.25
 

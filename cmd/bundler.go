@@ -83,6 +83,8 @@ Configuration Fields
                   - "pem": PEM format with .pem extension (default)
                   - "der": DER format with .crt extension
                   - "both": Both PEM and DER versions are included
+                  - "crt": PEM format with .crt extension
+				  - "pemcrt": PEM format with both .pem and .crt extensions
 
         formats: List of archive formats to generate:
                  - "zip": Creates a .zip archive

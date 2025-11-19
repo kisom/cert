@@ -181,6 +181,7 @@ func init() {
 	rootCommand.AddCommand(csrPubCommand)
 	rootCommand.AddCommand(dumpCommand)
 	rootCommand.AddCommand(expiryCommand)
+	rootCommand.AddCommand(fileTypeCommand)
 	rootCommand.AddCommand(genCSRCommand)
 	rootCommand.AddCommand(genKeyCommand)
 	rootCommand.AddCommand(matchKeyCommand)

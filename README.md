@@ -6,6 +6,11 @@ cert is a small command‑line tool for inspecting and working with X.509/TLS
 certificates and connections. It consolidates several utilities from
 [goutils](https://github.com/kisom/goutils/) into a single, ergonomic CLI.
 
+AI notes:
+
++ None of the code has been written with AI.
++ The docs are currently largely AI-generated while I work on the tool 
+  itself.
 
 Overview
 --------
@@ -80,7 +85,7 @@ Global flags (from `cmd/config.go`):
 
 - --config string                  Path to config file (default: $HOME/.config/goutils/cert.yaml)
 - --ca string                      CA certificate bundle file (PEM)
-- -d, --display-mode string        Hex display mode for SKI (lower|upper) (default: lower)
+- -d, --display-mode string        Hex display mode for SKI and serial (lower|upper) (default: lower)
 - -i, --intermediates-file string  Intermediate certificate bundle (PEM)
 - -k, --skip-verify                Skip certificate verification
 - -t, --strict-tls                 Use strict TLS settings
@@ -106,6 +111,12 @@ Subcommands:
   long help for the expected YAML structure and examples.
   Local flags: `-f, --config-file` (default: bundle.yaml), `-o, --output` (output directory; default: pkg).
 
+- cert csrpub <file.csr> [more ...]
+  Extract the public key from one or more CSRs and write each to a PEM file
+  named `<file>.pub`. Use `--stdout` to write the PEM to stdout instead of a
+  file.
+  Local flags: `--stdout`.
+
 - cert stealchain <host:port> [more ...]
   Retrieve and save the presented certificate chain from one or more TLS
   endpoints to `<host>.pem` files. Honors `--ca`; uses system pool if not
@@ -126,6 +137,12 @@ Subcommands:
   - To encode raw binary to PEM, pass `-t, --pem-type` (e.g. CERTIFICATE) and the tool writes the PEM to stdout.
   - To decode a PEM file to raw DER, pass `-b, --binary-out <out-file>` and the tool writes the decoded bytes to the given file.
   Local flags: `-b, --binary-out`, `-t, --pem-type` (exactly one of these is required; they are mutually exclusive).
+
+- cert serial [host:port|cert.pem]...
+  Display the certificate serial number for each input.
+  - By default, prints the serial as hex; use global `--display-mode` to select hex case.
+  - With `-n, --numeric`, prints the serial as an integer.
+  Local flags: `-n, --numeric`.
 
 - cert verify <host:port|cert.pem> [more ...]
   Verify certificate chains for hosts or cert files. Supports custom root and
@@ -152,25 +169,22 @@ Subcommands:
   Print the embedded version string.
 
 
-Configuration and Environment
+Configuration and environment
 -----------------------------
 
-Configuration is managed via Cobra flags and Viper. Behavior is influenced by:
+Configuration is managed via Cobra flags and Viper:
 
-- Flags listed above.
-- Environment variables: Viper's `AutomaticEnv()` is enabled, so any of the
-  flag names may be provided as environment variables (uppercase, with dashes
-  typically replaced by underscores by the shell when exporting). Examples:
-  - CA, INTERMEDIATES_FILE, DISPLAY_MODE, SKIP_VERIFY, STRICT_TLS, VERBOSE,
-    LEAF_ONLY, LEEWAY, EXPIRING_ONLY, CERT_FILE, KEY_FILE, SHOULD_MATCH, SNI_NAME,
-    FORCE_INTERMEDIATE_BUNDLE, CHECK_REVOCATION, CONFIG_FILE, OUTPUT, BINARY_OUT,
-    PEM_TYPE
-  Note: Viper's default behavior is case‑insensitive lookup; exact mapping may
-  depend on your environment.
+- Prefer command‑line flags shown above; each subcommand also has `--help`.
 - Config file: by default, `$HOME/.config/goutils/cert.yaml` if present. You can
   set a custom file via `--config <path>`.
+- Environment variables: Viper's `AutomaticEnv()` is enabled, but no key
+  replacer is configured. That means only keys without dashes can be set via
+  environment variables in most shells. For example, `CA` and `VERBOSE` may
+  work, but keys like `intermediates-file` or `skip-verify` typically cannot be
+  exported because `-` is not valid in environment variable names. Prefer flags
+  or the config file for those.
 
-Example config (`~/.config/goutils/cert.yaml`):
+Example config file (`~/.config/goutils/cert.yaml`):
 
   ca: /etc/ssl/certs/ca-bundle.crt
   intermediates-file: /path/to/intermediates.pem
@@ -189,6 +203,46 @@ Example config (`~/.config/goutils/cert.yaml`):
   pem-type: CERTIFICATE
   force-intermediate-bundle: false
   check-revocation: false
+
+
+Examples
+--------
+
+- Show TLS info for a couple hosts:
+
+  cert tlsinfo example.com:443 golang.org:443
+
+- Dump just the leaf certificate from a host:
+
+  cert dump --leaf-only example.com:443
+
+- Save a host's full chain to PEM and override SNI:
+
+  cert stealchain -s www.example.com example.net:443
+
+- Verify a certificate file against custom roots and intermediates with revocation checks:
+
+  cert verify -r --ca roots.pem -i intermediates.pem certs/service.pem
+
+- Extract the public key from a CSR to stdout:
+
+  cert csrpub --stdout request.csr
+
+- Extract public keys from multiple CSRs, writing request.csr.pub files:
+
+  cert csrpub service.csr api.csr
+
+- Print SKIs for a key and a cert and require that they match:
+
+  cert ski -m service.key service.crt
+
+- Print a serial as an integer:
+
+  cert serial -n service.crt
+
+- Check that a cert was signed by a specific CA:
+
+  cert ca-signed --ca org-root.pem service.crt
 
 
 Embedding version information
@@ -232,6 +286,7 @@ Top‑level files and directories:
   - `dump.go` — `cert dump`.
   - `bundler.go` — `cert bundler`.
   - `matchkey.go` — `cert matchkey`.
+  - `csrpub.go` — `cert csrpub`.
   - `pem.go` — `cert pem`.
   - `ski.go` — `cert ski`.
   - `stealchain.go` — `cert stealchain`.

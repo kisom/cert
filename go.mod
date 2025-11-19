@@ -3,7 +3,7 @@ module cert
 go 1.25
 
 require (
-	git.wntrmute.dev/kyle/goutils v1.14.6
+	git.wntrmute.dev/kyle/goutils v1.14.7
 	github.com/spf13/cobra v1.10.1
 	github.com/spf13/viper v1.21.0
 )

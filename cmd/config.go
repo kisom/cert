@@ -65,7 +65,7 @@ func init() {
 		"config", "",
 		"config file (default is $HOME/.config/goutils/cert.yaml)")
 	rootCommand.PersistentFlags().String("ca", "", "CA certificate bundle file")
-	rootCommand.PersistentFlags().StringP("display-mode", "d", "lower", "hex display mode for SKI (default: lower)")
+	rootCommand.PersistentFlags().StringP("display-mode", "d", "lower", "hex display mode for SKI")
 	rootCommand.PersistentFlags().StringP("intermediates-file", "i", "",
 		"intermediate certificate bundle")
 	rootCommand.PersistentFlags().BoolP("skip-verify", "k", false, "skip certificate verification")
@@ -85,6 +85,7 @@ func init() {
 	// Local flags follow.
 	bundlerCommand.Flags().StringP("config-file", "f", "bundle.yaml", "config file for bundler (default: bundle.yaml in current directory")
 	bundlerCommand.Flags().StringP("output", "o", "pkg", "output directory for generated files")
+	csrPubCommand.Flags().Bool("stdout", false, "write PEM-encoded CSR to stdout instead of a file")
 	dumpCommand.Flags().BoolP("leaf-only", "l", false, "only display the leaf certificate")
 	expiryCommand.Flags().DurationP("leeway", "p", 0, "leeway for certificate expiry checks (e.g. 1h30m")
 	expiryCommand.Flags().BoolP("expiring-only", "q", false, "only display certificates expiring soon")
@@ -101,6 +102,7 @@ func init() {
 	// Bind local flags.
 	viper.BindPFlag("config-file", bundlerCommand.Flags().Lookup("config-file"))
 	viper.BindPFlag("output", bundlerCommand.Flags().Lookup("output"))
+	viper.BindPFlag("stdout", csrPubCommand.Flags().Lookup("stdout"))
 	viper.BindPFlag("leaf-only", dumpCommand.Flags().Lookup("leaf-only"))
 	viper.BindPFlag("leeway", expiryCommand.Flags().Lookup("leeway"))
 	viper.BindPFlag("expiring-only", expiryCommand.Flags().Lookup("expiring-only"))
@@ -125,6 +127,7 @@ func init() {
 func init() {
 	rootCommand.AddCommand(bundlerCommand)
 	rootCommand.AddCommand(caSignedCommand)
+	rootCommand.AddCommand(csrPubCommand)
 	rootCommand.AddCommand(dumpCommand)
 	rootCommand.AddCommand(expiryCommand)
 	rootCommand.AddCommand(matchKeyCommand)

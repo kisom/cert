@@ -10,6 +10,7 @@ import (
 	"git.wntrmute.dev/kyle/goutils/lib"
 	"git.wntrmute.dev/kyle/goutils/lib/dialer"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/kisom/cert/tlsinfo"
 )
@@ -33,7 +34,10 @@ not validate the peer.`,
 			conn, err := dialer.DialTLS(
 				context.Background(),
 				host.String(),
-				dialer.Opts{TLSConfig: &tls.Config{InsecureSkipVerify: true}}, // #nosec G402
+				dialer.Opts{TLSConfig: &tls.Config{
+					InsecureSkipVerify: true
+					ServerName: viper.GetString("sni-name"),
+				}}, // #nosec G402
 			) // #nosec G402
 			die.If(err)
 

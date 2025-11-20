@@ -126,6 +126,8 @@ func initLocalFlags() {
 	signCSRCommand.Flags().StringP("key-file", "p", "", "key file to match")
 	skiCommand.Flags().BoolP("should-match", "m", false, "all SKIs should match")
 	stealchainCommand.Flags().StringP("sni-name", "s", "", "SNI name to use when connecting")
+	tlsInfoCommand.Flags().StringP("sni-name", "s", "", "SNI name to use when connecting")
+
 	verifyCommand.Flags().BoolP("force-intermediate-bundle", "f", false, "force loading of intermediate bundle")
 	verifyCommand.Flags().BoolP("check-revocation", "r", false, "check revocation status")
 }
@@ -155,6 +157,7 @@ func bindLocalFlags() {
 	viper.BindPFlag("signing-key-file", signCSRCommand.Flags().Lookup("key-file"))
 	viper.BindPFlag("should-match", skiCommand.Flags().Lookup("should-match"))
 	viper.BindPFlag("sni-name", stealchainCommand.Flags().Lookup("sni-name"))
+	viper.BindPFlag("sni-name", tlsInfoCommand.Flags().Lookup("sni-name"))
 	viper.BindPFlag("force-intermediate-bundle", verifyCommand.Flags().Lookup("force-intermediate-bundle"))
 	viper.BindPFlag("check-revocation", verifyCommand.Flags().Lookup("check-revocation"))
 

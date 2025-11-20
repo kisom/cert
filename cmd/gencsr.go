@@ -19,7 +19,6 @@ var genCSRCommand = &cobra.Command{
 		die.If(err)
 
 		var priv crypto.PrivateKey
-		fmt.Printf("private key: %s\n", viper.GetString("gencsr-key-file"))
 		if viper.IsSet("gencsr-key-file") {
 			priv, err = certlib.LoadPrivateKey(viper.GetString("gencsr-key-file"))
 			die.If(err)

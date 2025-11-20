@@ -42,7 +42,9 @@ var selfSignCommand = &cobra.Command{
 				if viper.GetBool("verbose") {
 					fmt.Printf("loading csr: %s\n", viper.GetString("selfsign-csr-file"))
 				}
+
 				req, err = certlib.LoadCSR(viper.GetString("selfsign-csr-file"))
+				die.If(err)
 			}
 		}
 

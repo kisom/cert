@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"crypto/x509"
-	"fmt"
 	"os"
 
 	"git.wntrmute.dev/kyle/goutils/lib/fetch"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -25,13 +25,15 @@ Targets may be:
 
 Use --leaf-only to print only the leaf certificate when connecting to a host.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		tcfg, err := tlsConfig()
 		cobra.CheckErr(err)
 
 		for _, arg := range args {
 			var certs []*x509.Certificate
 
-			fmt.Fprintf(os.Stdout, "--%s ---\n", arg)
+			msg.Printf("--%s ---\n", arg)
 
 			certs, err = fetch.GetCertificateChain(arg, tcfg)
 			if err != nil {

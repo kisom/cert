@@ -161,6 +161,6 @@ Notes
 		err := bundler.Run(viper.GetString("config-file"), viper.GetString("output"))
 		die.If(err)
 
-		msg.Vprintln("OK.")
+		msg.Qprintln("OK.")
 	},
 }

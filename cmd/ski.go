@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"flag"
-	"fmt"
 
 	"git.wntrmute.dev/kyle/goutils/certlib/ski"
 	"git.wntrmute.dev/kyle/goutils/die"
 	"git.wntrmute.dev/kyle/goutils/lib"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/viper"
 
 	"github.com/spf13/cobra"
@@ -22,6 +22,8 @@ input path, SKI, key type, and file type.
 
 Use --display-mode to control hex formatting of the SKI (default: lower).`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		var matchSKI string
 		for _, path := range flag.Args() {
 			keyInfo, err := ski.ParsePEM(path)
@@ -38,7 +40,9 @@ Use --display-mode to control hex formatting of the SKI (default: lower).`,
 				_, _ = lib.Warnx("%s: SKI mismatch (%s != %s)",
 					path, matchSKI, keySKI)
 			}
-			fmt.Printf("%s  %s (%s %s)\n", path, keySKI, keyInfo.KeyType, keyInfo.FileType)
+
+			msg.Printf("%s  %s (%s %s)\n", path, keySKI, keyInfo.KeyType, keyInfo.FileType)
+			msg.Qprintln("OK")
 		}
 	},
 }

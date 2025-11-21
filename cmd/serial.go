@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"crypto/x509"
-	"fmt"
 
 	"git.wntrmute.dev/kyle/goutils/die"
 	"git.wntrmute.dev/kyle/goutils/lib"
 	"git.wntrmute.dev/kyle/goutils/lib/fetch"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -16,6 +16,8 @@ var serialCommand = &cobra.Command{
 	Short: "Display serial number for a certificate",
 	Long:  `Display the serial number for a certificate.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		tcfg, err := tlsConfig()
 		die.If(err)
 
@@ -31,14 +33,15 @@ var serialCommand = &cobra.Command{
 				continue
 			}
 
-			fmt.Printf("%s: ", arg)
+			msg.Printf("%s: ", arg)
 
 			if numeric {
-				fmt.Printf("%s\n", cert.SerialNumber)
+				msg.Printf("%s\n", cert.SerialNumber)
 				continue
 			}
 
-			fmt.Printf("%s\n", lib.HexEncode(cert.SerialNumber.Bytes(), mode))
+			msg.Printf("%s\n", lib.HexEncode(cert.SerialNumber.Bytes(), mode))
+			msg.Qprintln("OK.")
 		}
 	},
 }

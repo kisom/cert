@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"git.wntrmute.dev/kyle/goutils/certlib"
 	"git.wntrmute.dev/kyle/goutils/certlib/certgen"
+	"git.wntrmute.dev/kyle/goutils/certlib/verify"
 	"git.wntrmute.dev/kyle/goutils/lib"
 	"git.wntrmute.dev/kyle/goutils/lib/dialer"
 	"git.wntrmute.dev/kyle/goutils/msg"
@@ -65,6 +67,14 @@ func setMsg() {
 	)
 }
 
+func printKeySpec(ks certgen.KeySpec) string {
+	if strings.ToLower(ks.Algorithm) == "ed25519" {
+		return "ed25519"
+	}
+
+	return fmt.Sprintf("%s-%d", ks.Algorithm, ks.Size)
+}
+
 func initConfig() {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
@@ -92,6 +102,7 @@ func initRootFlags() {
 		"config", "",
 		"config file (default is $HOME/.config/goutils/cert.yaml)")
 	rootCommand.PersistentFlags().String("ca", "", "CA certificate bundle file")
+	rootCommand.PersistentFlags().Bool("debug", false, "enable debug mode")
 	rootCommand.PersistentFlags().StringP("display-mode", "d", "lower", "hex display mode for SKI")
 	rootCommand.PersistentFlags().StringP("intermediates-file", "i", "",
 		"intermediate certificate bundle")
@@ -102,6 +113,7 @@ func initRootFlags() {
 
 	// Bind persistent flags.
 	viper.BindPFlag("ca", rootCommand.PersistentFlags().Lookup("ca"))
+	viper.BindPFlag("debug", rootCommand.PersistentFlags().Lookup("debug"))
 	viper.BindPFlag("display-mode", rootCommand.PersistentFlags().Lookup("display-mode"))
 	viper.BindPFlag("intermediates-file", rootCommand.PersistentFlags().Lookup("intermediates-file"))
 	viper.BindPFlag("skip-verify", rootCommand.PersistentFlags().Lookup("skip-verify"))
@@ -120,8 +132,8 @@ func initLocalFlags() {
 	csrPubCommand.Flags().Bool("stdout", false, "write PEM-encoded CSR to stdout instead of a file")
 	dumpCommand.Flags().BoolP("leaf-only", "l", false, "only display the leaf certificate")
 	dumpCommand.Flags().BoolP("show-hashes", "s", false, "show hashes of all certificates in the chain")
-	expiryCommand.Flags().DurationP("leeway", "p", 0, "leeway for certificate expiry checks (e.g. 1h30m")
-	expiryCommand.Flags().BoolP("expiring-only", "q", false, "only display certificates expiring soon")
+	expiryCommand.Flags().
+		DurationP("leeway", "p", verify.DefaultLeeway, "leeway for certificate expiry checks (e.g. 1h30m")
 	genCSRCommand.Flags().StringP("request", "f", "request.yaml", "YAML config file to use for self-signing")
 	genCSRCommand.Flags().StringP("key-file", "p", "", "optional private key for the CSR")
 	genKeyCommand.Flags().StringP("key-algo", "a", "ecdsa", "key type to generate (rsa or ec)")
@@ -152,7 +164,6 @@ func bindLocalFlags() {
 	viper.BindPFlag("leaf-only", dumpCommand.Flags().Lookup("leaf-only"))
 	viper.BindPFlag("show-hashes", dumpCommand.Flags().Lookup("show-hashes"))
 	viper.BindPFlag("leeway", expiryCommand.Flags().Lookup("leeway"))
-	viper.BindPFlag("expiring-only", expiryCommand.Flags().Lookup("expiring-only"))
 	viper.BindPFlag("gencsr-request", genCSRCommand.Flags().Lookup("request"))
 	viper.BindPFlag("gencsr-key-file", genCSRCommand.Flags().Lookup("key-file"))
 	viper.BindPFlag("key-algo", genKeyCommand.Flags().Lookup("key-algo"))

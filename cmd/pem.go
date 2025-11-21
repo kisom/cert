@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"git.wntrmute.dev/kyle/goutils/die"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -18,6 +19,8 @@ Alternatively, dump the binary data in a PEM file by specifying the file name
 with -b.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		if len(args) != 1 {
 			die.With("expected exactly one filename")
 		}
@@ -26,7 +29,12 @@ with -b.
 		fileData, err := os.ReadFile(path)
 		die.If(err)
 
-		if viper.IsSet("pem-type") && viper.GetString("pem-output") != "" {
+		if viper.IsSet("pem-type") {
+			if viper.GetString("pem-output") != "" {
+				die.With("no PEM type specified")
+			}
+
+			msg.Vprintf("encoding %s as PEM...\n", path)
 			block := &pem.Block{
 				Type:  viper.GetString("pem-type"),
 				Bytes: fileData,
@@ -38,8 +46,12 @@ with -b.
 			return
 		}
 
+		msg.Vprintf("dumping binary data from %s to in %s...\n", path, viper.GetString("binary-out"))
+
 		block, _ := pem.Decode(fileData)
 		err = os.WriteFile(viper.GetString("binary-out"), block.Bytes, 0644)
 		die.If(err)
+
+		msg.Qprintln("OK.")
 	},
 }

@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"crypto/x509"
-	"fmt"
 
 	"git.wntrmute.dev/kyle/goutils/certlib/verify"
 	"git.wntrmute.dev/kyle/goutils/die"
 	"git.wntrmute.dev/kyle/goutils/lib"
 	"git.wntrmute.dev/kyle/goutils/lib/fetch"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -15,8 +15,11 @@ import (
 var expiryCommand = &cobra.Command{
 	Use:   "expiry <cert.pem>",
 	Short: "Display certificate expiry date",
-	Long:  `Display the expiry date of a certificate file.`,
+	Long: `Display the expiry date of a certificate file. If quiet mode is enabled,
+only certificates expiring within the window are displayed.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		tcfg, err := tlsConfig()
 		die.If(err)
 
@@ -37,7 +40,7 @@ var expiryCommand = &cobra.Command{
 						lib.Warn(err, "certificate is expiring")
 					}
 				} else {
-					fmt.Printf("%s expires on %s (in %s)\n", check.Name(),
+					msg.Printf("%s expires on %s (in %s)\n", check.Name(),
 						cert.NotAfter, check.Expiry())
 				}
 			}

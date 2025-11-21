@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"crypto/x509"
-	"fmt"
 	"os"
 
 	"git.wntrmute.dev/kyle/goutils/certlib"
 	"git.wntrmute.dev/kyle/goutils/certlib/verify"
 	"git.wntrmute.dev/kyle/goutils/die"
 	"git.wntrmute.dev/kyle/goutils/lib"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -21,6 +21,8 @@ TLS endpoints (host:port) or certificate files. You can supply custom root CA
 and intermediate bundles. Optionally check revocation.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		var (
 			roots, ints *x509.CertPool
 			err         error
@@ -35,9 +37,7 @@ and intermediate bundles. Optionally check revocation.
 
 		caFile := viper.GetString("ca")
 		if caFile != "" {
-			if viper.GetBool("verbose") {
-				fmt.Printf("loading CA certificates from %s\n", caFile)
-			}
+			msg.Vprintf("loading CA certificates from %s\n", caFile)
 
 			roots, err = certlib.LoadPEMCertPool(caFile)
 			die.If(err)
@@ -45,9 +45,8 @@ and intermediate bundles. Optionally check revocation.
 
 		intFile := viper.GetString("intermediates-file")
 		if intFile != "" {
-			if viper.GetBool("verbose") {
-				fmt.Printf("loading intermediate certificates from %s\n", intFile)
-			}
+
+			msg.Vprintf("loading intermediate certificates from %s\n", intFile)
 
 			ints, err = certlib.LoadPEMCertPool(intFile)
 			die.If(err)
@@ -60,18 +59,15 @@ and intermediate bundles. Optionally check revocation.
 		opts.Intermediates = ints
 
 		for _, arg := range args {
-			if viper.GetBool("verbose") {
-				fmt.Printf("verifying %s...\n", arg)
-			}
+			msg.Vprintf("verifying %s...\n", arg)
 
 			_, err = verify.Chain(os.Stdout, arg, opts)
 			if err != nil {
 				lib.Warn(err, "while verifying %s", arg)
 				failed = true
 			} else {
-				if viper.GetBool("verbose") {
-					fmt.Printf("%s: OK\n", arg)
-				}
+				msg.Vprintf("%s: OK\n", arg)
+
 			}
 		}
 

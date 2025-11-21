@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 )
 
@@ -20,6 +19,6 @@ var versionCommand = &cobra.Command{
 	Use:   "version",
 	Short: "Print the embedded version",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(Version)
+		msg.Println(Version)
 	},
 }

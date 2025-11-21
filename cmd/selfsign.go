@@ -8,6 +8,7 @@ import (
 
 	"git.wntrmute.dev/kyle/goutils/certlib"
 	"git.wntrmute.dev/kyle/goutils/die"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -17,7 +18,10 @@ var selfSignCommand = &cobra.Command{
 	Short: "Generate a self-signed certificate",
 	Long:  `Generate a self-signed certificate.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		configFile := viper.GetString("request")
+		msg.Vprintf("loading request from %s\n", configFile)
 		if configFile == "" {
 			die.With("no request file specified.")
 		}
@@ -31,17 +35,13 @@ var selfSignCommand = &cobra.Command{
 		)
 
 		if viper.IsSet("selfsign-key-file") {
-			if viper.GetBool("verbose") {
-				fmt.Printf("loading key: %s\n", viper.GetString("selfsign-key-file"))
-			}
+			msg.Vprintf("loading key: %s\n", viper.GetString("selfsign-key-file"))
 
 			priv, err = certlib.LoadPrivateKey(viper.GetString("selfsign-key-file"))
 			die.If(err)
 
 			if viper.IsSet("selfsign-csr-file") {
-				if viper.GetBool("verbose") {
-					fmt.Printf("loading csr: %s\n", viper.GetString("selfsign-csr-file"))
-				}
+				msg.Vprintf("loading csr: %s\n", viper.GetString("selfsign-csr-file"))
 
 				req, err = certlib.LoadCSR(viper.GetString("selfsign-csr-file"))
 				die.If(err)
@@ -53,15 +53,18 @@ var selfSignCommand = &cobra.Command{
 				die.With("cannot selfsign a CSR without a key.")
 			}
 
+			msg.Vprintf("generating %s key...\n", printKeySpec(reqConfig.KeySpec))
 			priv, req, err = reqConfig.Generate()
 			die.If(err)
 		}
 
 		if req == nil {
+			msg.Vprintln("generating certificate signing request...")
 			req, err = reqConfig.Request(priv)
 			die.If(err)
 		}
 
+		msg.Dprintln("signing certificate...")
 		cert, err := reqConfig.Profile.SelfSign(req, priv)
 		die.If(err)
 
@@ -75,5 +78,6 @@ var selfSignCommand = &cobra.Command{
 		fmt.Println(string(privPEM))
 		fmt.Println(string(certPEM))
 
+		msg.Qprintln("OK.")
 	},
 }

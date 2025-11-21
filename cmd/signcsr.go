@@ -3,13 +3,13 @@ package cmd
 import (
 	"crypto"
 	"crypto/x509"
-	"fmt"
 	"os"
 
 	"git.wntrmute.dev/kyle/goutils/certlib"
 	"git.wntrmute.dev/kyle/goutils/certlib/certgen"
 	"git.wntrmute.dev/kyle/goutils/die"
 	"git.wntrmute.dev/kyle/goutils/lib"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -37,31 +37,26 @@ var signCSRCommand = &cobra.Command{
 	Use:   "signcsr",
 	Short: "Sign a certificate signing request (CSR)",
 	Run: func(cmd *cobra.Command, args []string) {
-		verbose := viper.GetBool("verbose")
+		setMsg()
 
-		if verbose {
-			fmt.Printf("loading ca cert: %s\n", viper.GetString("signing-cert-file"))
-		}
+		msg.Vprintf("loading ca cert: %s\n", viper.GetString("signing-cert-file"))
+
 		caCert, err := certlib.LoadCertificate(viper.GetString("signing-cert-file"))
 		die.If(err)
 
-		if verbose {
-			fmt.Printf("loading key: %s\n", viper.GetString("signing-key-file"))
-		}
+		msg.Vprintf("loading key: %s\n", viper.GetString("signing-key-file"))
+
 		priv, err := certlib.LoadPrivateKey(viper.GetString("signing-key-file"))
 		die.If(err)
 
-		if verbose {
-			fmt.Printf("loading config: %s\n", viper.GetString("signing-request"))
-		}
+		msg.Vprintf("loading config: %s\n", viper.GetString("signing-request"))
+
 		cfg, err := loadCertificateRequest(viper.GetString("signing-request"))
 		die.If(err)
 
 		var cert *x509.Certificate
 		for _, arg := range args {
-			if verbose {
-				fmt.Printf("signing csr from %s...\n", arg)
-			}
+			msg.Vprintf("signing csr from %s...\n", arg)
 
 			cert, err = signCSR(caCert, priv, cfg, arg)
 			if err != nil {
@@ -70,7 +65,9 @@ var signCSRCommand = &cobra.Command{
 			}
 
 			pemCert := certlib.EncodeCertificatePEM(cert)
-			fmt.Println(string(pemCert))
+			msg.Println(string(pemCert))
+
+			msg.Qprintln("OK.")
 		}
 	},
 }

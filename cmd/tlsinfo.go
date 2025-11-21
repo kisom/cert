@@ -23,6 +23,8 @@ TLS version, cipher suite, and peer certificate subjects/issuers. Note: the
 connection is made with InsecureSkipVerify=true to retrieve details; this does
 not validate the peer.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		for _, target := range args {
 			host, err := hosts.ParseHost(target)
 			if err != nil {
@@ -41,10 +43,9 @@ not validate the peer.`,
 			) // #nosec G402
 			die.If(err)
 
-			defer conn.Close()
-
 			state := conn.ConnectionState()
 			tlsinfo.PrintConnectionDetails(os.Stdout, state)
+			conn.Close()
 		}
 
 	},

@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"git.wntrmute.dev/kyle/goutils/certlib"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 )
 
@@ -12,15 +11,17 @@ var fileTypeCommand = &cobra.Command{
 	Short: "Display the file type of an X.509 file",
 	Long:  `Display the file type of an X.509 file.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		for _, fileName := range args {
-			fmt.Printf("%s: ", fileName)
+			msg.Printf("%s: ", fileName)
 
 			fileKind, err := certlib.FileKind(fileName)
 			if err != nil {
-				fmt.Println(err)
+				msg.Println(err)
 			}
 
-			fmt.Println(fileKind)
+			msg.Println(fileKind)
 		}
 	},
 }

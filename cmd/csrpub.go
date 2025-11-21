@@ -6,11 +6,11 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
 	"os"
 
 	"git.wntrmute.dev/kyle/goutils/certlib"
 	"git.wntrmute.dev/kyle/goutils/die"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -20,6 +20,8 @@ var csrPubCommand = &cobra.Command{
 	Short: "Display public key from a CSR",
 	Long:  `Extract the public key from a CSR and write it to a PEM file.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		for _, fileName := range args {
 			in, err := os.ReadFile(fileName)
 			die.If(err)
@@ -57,7 +59,8 @@ var csrPubCommand = &cobra.Command{
 			err = os.WriteFile(fileName+".pub", pem.EncodeToMemory(p), 0o644) // #nosec G306
 			die.If(err)
 
-			fmt.Fprintf(os.Stdout, "[+] wrote %s.\n", fileName+".pub")
+			msg.Qprintf("[+] wrote %s.\n", fileName+".pub")
+			msg.Qprintln("OK.")
 		}
 	},
 }

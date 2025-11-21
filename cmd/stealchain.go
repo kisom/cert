@@ -3,12 +3,11 @@ package cmd
 import (
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
 	"os"
 
-	"git.wntrmute.dev/kyle/goutils/certlib"
 	"git.wntrmute.dev/kyle/goutils/die"
 	"git.wntrmute.dev/kyle/goutils/lib/fetch"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -22,13 +21,15 @@ certificate chain to a local PEM file named <host>.pem.
 Use --sni-name to override the SNI name used for the TLS handshake. Root CAs
 are taken from --ca if provided, otherwise from the system pool.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
 		var roots *x509.CertPool
 
 		tcfg, err := tlsConfig()
 		die.If(err)
 
 		if viper.GetString("ca") != "" {
-			roots, err = certlib.LoadPEMCertPool(viper.GetString("ca"))
+			roots, err = getPool()
 			die.If(err)
 		} else {
 			roots, err = x509.SystemCertPool()
@@ -44,9 +45,7 @@ are taken from --ca if provided, otherwise from the system pool.`,
 		for _, site := range args {
 			var chains []*x509.Certificate
 
-			if viper.GetBool("verbose") {
-				fmt.Printf("[+] fetching chain for %s...\n", site)
-			}
+			msg.Vprintf("[+] fetching chain for %s...\n", site)
 
 			chains, err = fetch.GetCertificateChain(site, tcfg)
 			die.If(err)
@@ -64,9 +63,8 @@ are taken from --ca if provided, otherwise from the system pool.`,
 			err = os.WriteFile(site+".pem", chain, 0644)
 			die.If(err)
 
-			if viper.GetBool("verbose") {
-				fmt.Printf("[+] wrote %s.pem.\n", site)
-			}
+			msg.Vprintf("[+] wrote %s.pem.\n", site)
+			msg.Qprintln("OK.")
 		}
 	},
 }

@@ -49,7 +49,7 @@ jobs:
       - uses: mislav/bump-homebrew-formula-action@v3
         with:
           formula-name: cert
-          formula-path: Formula/m/my_formula.rb
+          formula-path: Formula/cert.rb
           homebrew-tap: kisom/homebrew-tap
           base-branch: master
           commit-message: |

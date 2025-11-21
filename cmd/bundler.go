@@ -1,10 +1,9 @@
 package cmd
 
 import (
-	"fmt"
-
 	"git.wntrmute.dev/kyle/goutils/certlib/bundler"
 	"git.wntrmute.dev/kyle/goutils/die"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -153,17 +152,15 @@ Notes
   - If both include_single and include_individual are true, archives contain both
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		if viper.GetBool("verbose") {
-			fmt.Printf("bundling with the config file at %s -> %s\n",
-				viper.GetString("config-file"),
-				viper.GetString("output-dir"))
-		}
+		setMsg()
+
+		msg.Vprintf("bundling with the config file at %s -> %s\n",
+			viper.GetString("config-file"),
+			viper.GetString("output-dir"))
 
 		err := bundler.Run(viper.GetString("config-file"), viper.GetString("output"))
 		die.If(err)
 
-		if viper.GetBool("verbose") {
-			fmt.Println("OK.")
-		}
+		msg.Vprintln("OK.")
 	},
 }

@@ -11,6 +11,8 @@ import (
 	"git.wntrmute.dev/kyle/goutils/certlib/certgen"
 	"git.wntrmute.dev/kyle/goutils/lib"
 	"git.wntrmute.dev/kyle/goutils/lib/dialer"
+	"git.wntrmute.dev/kyle/goutils/msg"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
@@ -55,6 +57,14 @@ func loadCertificateRequest(path string) (*certgen.CertificateRequest, error) {
 	return req, nil
 }
 
+func setMsg() {
+	msg.Set(
+		viper.GetBool("quiet"),
+		viper.GetBool("verbose"),
+		viper.GetBool("debug"),
+	)
+}
+
 func initConfig() {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
@@ -87,6 +97,7 @@ func initRootFlags() {
 		"intermediate certificate bundle")
 	rootCommand.PersistentFlags().BoolP("skip-verify", "k", false, "skip certificate verification")
 	rootCommand.PersistentFlags().Bool("strict-tls", false, "use strict TLS settings")
+	rootCommand.PersistentFlags().BoolP("quiet", "q", false, "enable quiet mode")
 	rootCommand.PersistentFlags().BoolP("verbose", "v", false, "verbose output")
 
 	// Bind persistent flags.
@@ -95,9 +106,11 @@ func initRootFlags() {
 	viper.BindPFlag("intermediates-file", rootCommand.PersistentFlags().Lookup("intermediates-file"))
 	viper.BindPFlag("skip-verify", rootCommand.PersistentFlags().Lookup("skip-verify"))
 	viper.BindPFlag("strict-tls", rootCommand.PersistentFlags().Lookup("strict-tls"))
+	viper.BindPFlag("quiet", rootCommand.PersistentFlags().Lookup("quiet"))
 	viper.BindPFlag("verbose", rootCommand.PersistentFlags().Lookup("verbose"))
 
 	rootCommand.MarkFlagsMutuallyExclusive("skip-verify", "strict-tls")
+	rootCommand.MarkFlagsMutuallyExclusive("quiet", "verbose")
 }
 
 func initLocalFlags() {
@@ -180,6 +193,8 @@ func init() {
 	initRootFlags()
 	initLocalFlags()
 	bindLocalFlags()
+
+	msg.Reset()
 }
 
 func init() {

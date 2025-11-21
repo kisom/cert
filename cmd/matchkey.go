@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"git.wntrmute.dev/kyle/goutils/certlib"
 	"git.wntrmute.dev/kyle/goutils/die"
+	"git.wntrmute.dev/kyle/goutils/msg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -17,20 +17,24 @@ var matchKeyCommand = &cobra.Command{
 correspond to each other. Returns non-zero on mismatch unless --verbose is set
 and a match is found.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setMsg()
+
+		msg.Vprintf("loading certificate from %s\n", viper.GetString("cert-file"))
 		cert, err := certlib.LoadCertificate(viper.GetString("cert-file"))
 		die.If(err)
 
+		msg.Vprintf("loading private key from %s\n", viper.GetString("key-file"))
 		priv, err := certlib.LoadPrivateKey(viper.GetString("key-file"))
 		die.If(err)
 
 		matched, reason := certlib.MatchKeys(cert, priv)
 		if matched {
-			if viper.GetBool("verbose") {
-				fmt.Println("OK.")
-			}
+			msg.Qprintln("OK.")
+
 			return
 		}
-		fmt.Printf("No match (%s).\n", reason)
+
+		msg.Printf("No match (%s).\n", reason)
 		os.Exit(1)
 	},
 }

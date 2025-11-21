@@ -38,7 +38,7 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-      {{ .Version }}
+      _{{ .Version }}
 
 changelog:
   sort: asc

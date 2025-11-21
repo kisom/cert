@@ -65,7 +65,8 @@ homebrew_casks:
       branch: master
       pull_request:
         enabled: true
-
+    dependencies:
+      - formula: curl
     hooks:
       post:
         install: |

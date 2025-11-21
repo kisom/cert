@@ -60,6 +60,8 @@ func loadCertificateRequest(path string) (*certgen.CertificateRequest, error) {
 }
 
 func setMsg() {
+	msg.Reset()
+
 	msg.Set(
 		viper.GetBool("quiet"),
 		viper.GetBool("verbose"),
@@ -204,8 +206,6 @@ func init() {
 	initRootFlags()
 	initLocalFlags()
 	bindLocalFlags()
-
-	msg.Reset()
 }
 
 func init() {

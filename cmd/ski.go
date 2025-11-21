@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"flag"
-
 	"git.wntrmute.dev/kyle/goutils/certlib/ski"
 	"git.wntrmute.dev/kyle/goutils/die"
 	"git.wntrmute.dev/kyle/goutils/lib"
@@ -13,7 +11,7 @@ import (
 )
 
 var skiCommand = &cobra.Command{
-	Use:   "ski <key-or-cert> [more ...]",
+	Use:   "ski",
 	Short: "Display Subject Key Identifier (SKI) for keys/certs",
 	Long: `Display the Subject Key Identifier (SKI) for one or more keys or
 certificates. When multiple files are provided with --should-match, all SKIs
@@ -25,7 +23,7 @@ Use --display-mode to control hex formatting of the SKI (default: lower).`,
 		setMsg()
 
 		var matchSKI string
-		for _, path := range flag.Args() {
+		for _, path := range args {
 			keyInfo, err := ski.ParsePEM(path)
 			die.If(err)
 

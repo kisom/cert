@@ -212,6 +212,7 @@ func init() {
 	rootCommand.AddCommand(bundlerCommand)
 	rootCommand.AddCommand(caSignedCommand)
 	rootCommand.AddCommand(csrPubCommand)
+	rootCommand.AddCommand(docCommand)
 	rootCommand.AddCommand(dumpCommand)
 	rootCommand.AddCommand(expiryCommand)
 	rootCommand.AddCommand(fileTypeCommand)

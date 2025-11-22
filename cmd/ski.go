@@ -14,7 +14,9 @@ var skiCommand = &cobra.Command{
 	Use:   "ski",
 	Short: "Display Subject Key Identifier (SKI) for keys/certs",
 	Long: `Display the Subject Key Identifier (SKI) for one or more keys or
-certificates. When multiple files are provided with --should-match, all SKIs
+certificates. Note that this does not support remote certificates. 
+
+When multiple files are provided with --should-match, all SKIs
 are compared and a warning is printed if any differ. The output includes the
 input path, SKI, key type, and file type.
 
@@ -22,9 +24,12 @@ Use --display-mode to control hex formatting of the SKI (default: lower).`,
 	Run: func(cmd *cobra.Command, args []string) {
 		setMsg()
 
+		tcfg, err := tlsConfig()
+		die.If(err)
+
 		var matchSKI string
 		for _, path := range args {
-			keyInfo, err := ski.ParsePEM(path)
+			keyInfo, err := ski.Lookup(path, tcfg)
 			die.If(err)
 
 			keySKI, err := keyInfo.SKI(displayMode())

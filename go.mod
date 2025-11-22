@@ -3,7 +3,7 @@ module github.com/kisom/cert
 go 1.25
 
 require (
-	git.wntrmute.dev/kyle/goutils v1.16.3
+	git.wntrmute.dev/kyle/goutils v1.17.0
 	github.com/spf13/cobra v1.10.1
 	github.com/spf13/viper v1.21.0
 	gopkg.in/yaml.v3 v3.0.1

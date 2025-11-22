@@ -24,8 +24,8 @@ Use --display-mode to control hex formatting of the SKI (default: lower).`,
 	Run: func(cmd *cobra.Command, args []string) {
 		setMsg()
 
-		tcfg, err := tlsConfig()
-		die.If(err)
+		tcfg, tcfgErr := tlsConfig()
+		die.If(tcfgErr)
 
 		var matchSKI string
 		for _, path := range args {

@@ -35,7 +35,7 @@ var docgenCommand = &cobra.Command{
 		mdPath := filepath.Join(viper.GetString(flagOutput), "md")
 		err = os.MkdirAll(mdPath, 0755)
 		die.If(err)
-		
+
 		err = doc.GenMarkdownTree(rootCommand, mdPath)
 		die.If(err)
 	},

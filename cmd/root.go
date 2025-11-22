@@ -16,6 +16,18 @@ var rootCommand = &cobra.Command{
 certificates and connections. It consolidates several utilities from kisom/goutils
 into a single binary using the Cobra CLI framework. Use --help on any subcommand
 to see details and examples.
+
+A note on targets: most commands accept a list of targets, which can be either
+remote hosts or local files. cert will first check whether the target is a file
+on disk; if it is not, it will attempt to treat the target as a remote host.
+Valid formats for remote hosts are:
+
+- host[:port] (defaulting to port 443)
+- https URLs, including host:port
+- tls://host[:port]
+
+Generally, the tools will not proceed past the handshake state when connecting to
+a remote host.
 `,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:

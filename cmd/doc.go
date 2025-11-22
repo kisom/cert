@@ -94,7 +94,8 @@ subject:
 profile:
   is_ca: false
   path_len: 0
-  key_uses: digital signature
+  key_use: 
+    - digital signature
   ext_key_usages:
     - server auth
   expiry: 30d
@@ -115,9 +116,9 @@ PROFILE SECTION
 The profile section contains information about the certificate signing.
 
 If the profile is for a certificate authority, the is_ca field should be set
-as well as the path_len field.
+as well as the path_len field. The key_uses field should include cert sign.
 
-Generally for server certificates, the key_uses field should be set to
+Generally for server certificates, the key_uses field should include
 digital signature and ext_key_usages should include server auth. The list
 of strings for these fields is documented in the goutils/certlib/certgen
 package, but is provided below.

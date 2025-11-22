@@ -9,31 +9,18 @@ certificates and connections. It consolidates several utilities from
 AI notes:
 
 + None of the code has been written with AI.
-+ The docs are currently largely AI-generated while I work on the tool 
++ The docs are currently largely AI-generated while I work on the tool
   itself.
 
 Overview
 --------
 
-The `cert` binary provides subcommands to:
+`cert` is a tool that combines a lot of the small programs I've
+written over the last decade in building PKI systems. It's intended to
+help test systems, diagnose errors, and generally assist with
+validating PKI systems.
 
-- Connect to TLS endpoints and print connection details (version, cipher, peers).
-- Fetch and display certificate chains or dump certificate files.
-- Save a remote host's full certificate chain to PEM.
-- Compute and compare Subject Key Identifiers (SKIs) for keys/certs.
-- Verify certificate chains using optional custom root/intermediate bundles and
-  optional revocation checks.
-
-
-Stack and Tooling
------------------
-
-- Language: Go (module name: `cert`, Go toolchain declared in `go.mod`).
-- CLI framework: [spf13/cobra]
-- Configuration: [spf13/viper] (flags + environment + optional YAML config)
-- Dependencies: vendored via Go modules (`go.mod`, `go.sum`).
-- Packaging/Release: [goreleaser] (see `.goreleaser.yaml`).
-- CI: CircleCI (see badge above and `.circleci/config.yml`).
+Most of the subcommands have documentation.
 
 
 Requirements
@@ -41,7 +28,6 @@ Requirements
 
 - Go toolchain installed. The module currently declares:
   - go 1.25 in `go.mod` (use a compatible or newer Go version).
-- Network access if connecting to remote TLS endpoints.
 
 
 Installation
@@ -61,3 +47,12 @@ Installation
 ```
 
 - The releases page has binaries available.
+
+- There is a homebrew tap available:
+
+```
+  homebrew tap kisom/homebrew-tap
+  brew install cert
+```
+
+   This will also install the man pages and shell completions.

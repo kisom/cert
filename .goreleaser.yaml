@@ -50,27 +50,3 @@ release:
     ---
 
     Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
-
-homebrew_casks:
-  - name: cert
-    homepage: "https://github.com/kisom/cert"
-    description: "Certificate and TLS swiss army knife."
-    url:
-      template: "https://github.com/kisom/cert/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
-      using: ":homebrew_curl"
-    commit_msg_template: "Brew cask update for {{ .ProjectName }} version {{ .Tag }}"
-    repository:
-      owner: kisom
-      name: homebrew-tap
-      branch: master
-      pull_request:
-        enabled: true
-    dependencies:
-      - formula: curl
-    hooks:
-      post:
-        install: |
-          if OS.mac?
-            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/cert"]
-          end
-    

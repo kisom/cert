@@ -134,6 +134,7 @@ func initLocalFlags() {
 		StringP(flagConfigFile, "f", "bundle.yaml", "config file for bundler (default: bundle.yaml in current directory")
 	bundlerCommand.Flags().StringP(flagOutput, "o", "pkg", "output directory for generated files")
 	csrPubCommand.Flags().Bool(flagStdout, false, "write PEM-encoded CSR to stdout instead of a file")
+	docgenCommand.Flags().StringP(flagOutput, "o", "docs", "output directory for generated man pages")
 	dumpCommand.Flags().BoolP(flagLeafOnly, "l", false, "only display the leaf certificate")
 	dumpCommand.Flags().BoolP(flagShowHashes, "s", false, "show hashes of all certificates in the chain")
 	expiryCommand.Flags().
@@ -165,6 +166,7 @@ func bindLocalFlags() {
 	viper.BindPFlag(flagConfigFile, bundlerCommand.Flags().Lookup(flagConfigFile))
 	viper.BindPFlag(flagOutput, bundlerCommand.Flags().Lookup(flagOutput))
 	viper.BindPFlag(flagStdout, csrPubCommand.Flags().Lookup(flagStdout))
+	viper.BindPFlag(flagOutput, docgenCommand.Flags().Lookup(flagOutput))
 	viper.BindPFlag(flagLeafOnly, dumpCommand.Flags().Lookup(flagLeafOnly))
 	viper.BindPFlag(flagShowHashes, dumpCommand.Flags().Lookup(flagShowHashes))
 	viper.BindPFlag(flagLeeway, expiryCommand.Flags().Lookup(flagLeeway))
@@ -215,6 +217,7 @@ func init() {
 	rootCommand.AddCommand(caSignedCommand)
 	rootCommand.AddCommand(csrPubCommand)
 	rootCommand.AddCommand(docCommand)
+	rootCommand.AddCommand(docgenCommand)
 	rootCommand.AddCommand(dumpCommand)
 	rootCommand.AddCommand(expiryCommand)
 	rootCommand.AddCommand(fileTypeCommand)

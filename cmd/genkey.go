@@ -17,8 +17,8 @@ var genKeyCommand = &cobra.Command{
 		setMsg()
 
 		keyAlgo := certgen.KeySpec{
-			Algorithm: viper.GetString("key-algo"),
-			Size:      viper.GetInt("key-size"),
+			Algorithm: viper.GetString(flagKeyAlgo),
+			Size:      viper.GetInt(flagKeySize),
 		}
 
 		msg.Vprintf("generating %s private key\n", printKeySpec(keyAlgo))

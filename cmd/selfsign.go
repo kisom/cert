@@ -20,7 +20,7 @@ var selfSignCommand = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		setMsg()
 
-		configFile := viper.GetString("request")
+		configFile := viper.GetString(flagRequest)
 		msg.Vprintf("loading request from %s\n", configFile)
 		if configFile == "" {
 			die.With("no request file specified.")
@@ -34,22 +34,22 @@ var selfSignCommand = &cobra.Command{
 			req  *x509.CertificateRequest
 		)
 
-		if viper.IsSet("selfsign-key-file") {
-			msg.Vprintf("loading key: %s\n", viper.GetString("selfsign-key-file"))
+		if viper.IsSet(flagKeyFile) {
+			msg.Vprintf("loading key: %s\n", viper.GetString(flagKeyFile))
 
-			priv, err = certlib.LoadPrivateKey(viper.GetString("selfsign-key-file"))
+			priv, err = certlib.LoadPrivateKey(viper.GetString(flagKeyFile))
 			die.If(err)
 
-			if viper.IsSet("selfsign-csr-file") {
-				msg.Vprintf("loading csr: %s\n", viper.GetString("selfsign-csr-file"))
+			if viper.IsSet(flagCSRFile) {
+				msg.Vprintf("loading csr: %s\n", viper.GetString(flagCSRFile))
 
-				req, err = certlib.LoadCSR(viper.GetString("selfsign-csr-file"))
+				req, err = certlib.LoadCSR(viper.GetString(flagCSRFile))
 				die.If(err)
 			}
 		}
 
 		if priv == nil {
-			if viper.IsSet("selfsign-csr-file") {
+			if viper.IsSet(flagCSRFile) {
 				die.With("cannot selfsign a CSR without a key.")
 			}
 

@@ -33,7 +33,7 @@ only certificates expiring within the window are displayed.`,
 			}
 
 			for _, cert := range certs {
-				check := verify.NewCertCheck(cert, viper.GetDuration("leeway"))
+				check := verify.NewCertCheck(cert, viper.GetDuration(flagLeeway))
 
 				if viper.GetBool("expiring-only") {
 					if err = check.Err(); err != nil {

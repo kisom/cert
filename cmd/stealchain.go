@@ -28,7 +28,7 @@ are taken from --ca if provided, otherwise from the system pool.`,
 		tcfg, err := tlsConfig()
 		die.If(err)
 
-		if viper.GetString("ca") != "" {
+		if viper.GetString(flagCA) != "" {
 			roots, err = getPool()
 			die.If(err)
 		} else {
@@ -38,8 +38,8 @@ are taken from --ca if provided, otherwise from the system pool.`,
 
 		tcfg.RootCAs = roots
 
-		if viper.GetString("sni-name") != "" {
-			tcfg.ServerName = viper.GetString("sni-name")
+		if viper.GetString(flagSNIName) != "" {
+			tcfg.ServerName = viper.GetString(flagSNIName)
 		}
 
 		for _, site := range args {

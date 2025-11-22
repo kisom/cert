@@ -1,6 +1,8 @@
-# Added by goreleaser init:
+# Build artifacts.
 cert
 dist/
+
+# Test files.
 *.cer
 *.crt
 *.csr

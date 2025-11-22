@@ -49,7 +49,7 @@ var csrPubCommand = &cobra.Command{
 				Bytes: out,
 			}
 
-			if viper.GetBool("stdout") {
+			if viper.GetBool(flagStdout) {
 				err = pem.Encode(os.Stdout, p)
 				die.If(err)
 

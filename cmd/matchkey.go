@@ -19,12 +19,12 @@ and a match is found.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		setMsg()
 
-		msg.Vprintf("loading certificate from %s\n", viper.GetString("cert-file"))
-		cert, err := certlib.LoadCertificate(viper.GetString("cert-file"))
+		msg.Vprintf("loading certificate from %s\n", viper.GetString(flagCertFile))
+		cert, err := certlib.LoadCertificate(viper.GetString(flagCertFile))
 		die.If(err)
 
-		msg.Vprintf("loading private key from %s\n", viper.GetString("key-file"))
-		priv, err := certlib.LoadPrivateKey(viper.GetString("key-file"))
+		msg.Vprintf("loading private key from %s\n", viper.GetString(flagKeyFile))
+		priv, err := certlib.LoadPrivateKey(viper.GetString(flagKeyFile))
 		die.If(err)
 
 		matched, reason := certlib.MatchKeys(cert, priv)

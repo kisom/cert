@@ -151,4 +151,26 @@ EXTENDED KEY USAGES
 	- netscape sgc
 `,
 	},
+	"hexmode": {
+		Short: "documentation for --" + flagDisplayMode,
+		Long: flagDisplayMode + ` controls how binary data is displayed.
+
+The valid options here are:
+
+  + lower (default)
+  + upper
+  + lcolon (display as colon-separated lowercase hex pairs)
+  + uccolon (display as colon-separated uppercase hex pairs)
+  + bytes (display as a Go byte slice)
+  + base64 (display as base64)"
+
+With binary data 0x01 0x02 0xCA 0xFE:
+  + lower   - 0102cafe
+  + upper   - 0102CAFE
+  + lcolon  - 01:02:ca:fe
+  + uccolon - 01:02:CA:FE
+  + bytes   - []byte{0x01, 0x02, 0xCA, 0xFE}
+  + base64  - AQLK/g==
+`,
+	},
 }

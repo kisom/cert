@@ -18,14 +18,14 @@ var genCSRCommand = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		setMsg()
 
-		msg.Dprintf("loading config from %s\n", viper.GetString("gencsr-request"))
-		cfg, err := loadCertificateRequest(viper.GetString("gencsr-request"))
+		msg.Dprintf("loading config from %s\n", viper.GetString(flagRequest))
+		cfg, err := loadCertificateRequest(viper.GetString(flagRequest))
 		die.If(err)
 
 		var priv crypto.PrivateKey
-		if viper.IsSet("gencsr-key-file") {
-			msg.Dprintf("loading key from %s\n", viper.GetString("gencsr-key-file"))
-			priv, err = certlib.LoadPrivateKey(viper.GetString("gencsr-key-file"))
+		if viper.IsSet(flagKeyFile) {
+			msg.Dprintf("loading key from %s\n", viper.GetString(flagKeyFile))
+			priv, err = certlib.LoadPrivateKey(viper.GetString(flagKeyFile))
 			die.If(err)
 		} else {
 			var out []byte

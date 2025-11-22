@@ -38,7 +38,7 @@ not validate the peer.`,
 				host.String(),
 				dialer.Opts{TLSConfig: &tls.Config{
 					InsecureSkipVerify: true,
-					ServerName:         viper.GetString("sni-name"),
+					ServerName:         viper.GetString(flagSNIName),
 				}}, // #nosec G402
 			) // #nosec G402
 			die.If(err)

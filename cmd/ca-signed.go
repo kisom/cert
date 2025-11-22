@@ -43,11 +43,11 @@ Results will be output as one of:
 		tcfg, err := tlsConfig()
 		die.If(err)
 
-		if viper.GetString("ca") == "" {
+		if viper.GetString(flagCA) == "" {
 			die.With("CA certificate file must be specified.")
 		}
 
-		caCert, err := certlib.LoadCertificates(viper.GetString("ca"))
+		caCert, err := certlib.LoadCertificates(viper.GetString(flagCA))
 		die.If(err)
 
 		if len(caCert) != 1 {

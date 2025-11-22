@@ -155,10 +155,10 @@ Notes
 		setMsg()
 
 		msg.Vprintf("bundling with the config file at %s -> %s\n",
-			viper.GetString("config-file"),
+			viper.GetString(flagConfigFile),
 			viper.GetString("output-dir"))
 
-		err := bundler.Run(viper.GetString("config-file"), viper.GetString("output"))
+		err := bundler.Run(viper.GetString(flagConfigFile), viper.GetString(flagOutput))
 		die.If(err)
 
 		msg.Qprintln("OK.")

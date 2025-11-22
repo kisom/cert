@@ -21,11 +21,11 @@ import (
 )
 
 func getPool() (*x509.CertPool, error) {
-	return certlib.LoadFullCertPool(viper.GetString("ca"), viper.GetString("intermediates-file"))
+	return certlib.LoadFullCertPool(viper.GetString(flagCA), viper.GetString(flagIntermediatesFile))
 }
 
 func tlsConfig() (*tls.Config, error) {
-	tcfg, err := dialer.BaselineTLSConfig(viper.GetBool("skip-verify"), viper.GetBool("strict-tls"))
+	tcfg, err := dialer.BaselineTLSConfig(viper.GetBool(flagSkipVerify), viper.GetBool(flagStrictTLS))
 	if err != nil {
 		return nil, fmt.Errorf("couldn't create TLS config: %w", err)
 	}
@@ -36,11 +36,13 @@ func tlsConfig() (*tls.Config, error) {
 	}
 
 	tcfg.RootCAs = pool
+	tcfg.ServerName = viper.GetString(flagSNIName)
+
 	return tcfg, nil
 }
 
 func displayMode() lib.HexEncodeMode {
-	return lib.ParseHexEncodeMode(viper.GetString("display-mode"))
+	return lib.ParseHexEncodeMode(viper.GetString(flagDisplayMode))
 }
 
 func loadCertificateRequest(path string) (*certgen.CertificateRequest, error) {
@@ -63,9 +65,9 @@ func setMsg() {
 	msg.Reset()
 
 	msg.Set(
-		viper.GetBool("quiet"),
-		viper.GetBool("verbose"),
-		viper.GetBool("debug"),
+		viper.GetBool(flagQuiet),
+		viper.GetBool(flagVerbose),
+		viper.GetBool(flagDebug),
 	)
 }
 
@@ -103,101 +105,101 @@ func initRootFlags() {
 	rootCommand.PersistentFlags().StringVar(&cfgFile,
 		"config", "",
 		"config file (default is $HOME/.config/goutils/cert.yaml)")
-	rootCommand.PersistentFlags().String("ca", "", "CA certificate bundle file")
-	rootCommand.PersistentFlags().Bool("debug", false, "enable debug mode")
-	rootCommand.PersistentFlags().StringP("display-mode", "d", "lower", "hex display mode for SKI")
-	rootCommand.PersistentFlags().StringP("intermediates-file", "i", "",
+	rootCommand.PersistentFlags().String(flagCA, "", "CA certificate bundle file")
+	rootCommand.PersistentFlags().Bool(flagDebug, false, "enable debug mode")
+	rootCommand.PersistentFlags().StringP(flagDisplayMode, "d", "lower", "hex display mode for SKI")
+	rootCommand.PersistentFlags().StringP(flagIntermediatesFile, "i", "",
 		"intermediate certificate bundle")
-	rootCommand.PersistentFlags().BoolP("skip-verify", "k", false, "skip certificate verification")
-	rootCommand.PersistentFlags().Bool("strict-tls", false, "use strict TLS settings")
-	rootCommand.PersistentFlags().BoolP("quiet", "q", false, "enable quiet mode")
-	rootCommand.PersistentFlags().BoolP("verbose", "v", false, "verbose output")
+	rootCommand.PersistentFlags().BoolP(flagSkipVerify, "k", false, "skip certificate verification")
+	rootCommand.PersistentFlags().Bool(flagStrictTLS, false, "use strict TLS settings")
+	rootCommand.PersistentFlags().BoolP(flagQuiet, "q", false, "enable quiet mode")
+	rootCommand.PersistentFlags().BoolP(flagVerbose, "v", false, "verbose output")
 
 	// Bind persistent flags.
-	viper.BindPFlag("ca", rootCommand.PersistentFlags().Lookup("ca"))
-	viper.BindPFlag("debug", rootCommand.PersistentFlags().Lookup("debug"))
-	viper.BindPFlag("display-mode", rootCommand.PersistentFlags().Lookup("display-mode"))
-	viper.BindPFlag("intermediates-file", rootCommand.PersistentFlags().Lookup("intermediates-file"))
-	viper.BindPFlag("skip-verify", rootCommand.PersistentFlags().Lookup("skip-verify"))
-	viper.BindPFlag("strict-tls", rootCommand.PersistentFlags().Lookup("strict-tls"))
-	viper.BindPFlag("quiet", rootCommand.PersistentFlags().Lookup("quiet"))
-	viper.BindPFlag("verbose", rootCommand.PersistentFlags().Lookup("verbose"))
+	viper.BindPFlag(flagCA, rootCommand.PersistentFlags().Lookup(flagCA))
+	viper.BindPFlag(flagDebug, rootCommand.PersistentFlags().Lookup(flagDebug))
+	viper.BindPFlag(flagDisplayMode, rootCommand.PersistentFlags().Lookup(flagDisplayMode))
+	viper.BindPFlag(flagIntermediatesFile, rootCommand.PersistentFlags().Lookup(flagIntermediatesFile))
+	viper.BindPFlag(flagSkipVerify, rootCommand.PersistentFlags().Lookup(flagSkipVerify))
+	viper.BindPFlag(flagStrictTLS, rootCommand.PersistentFlags().Lookup(flagStrictTLS))
+	viper.BindPFlag(flagQuiet, rootCommand.PersistentFlags().Lookup(flagQuiet))
+	viper.BindPFlag(flagVerbose, rootCommand.PersistentFlags().Lookup(flagVerbose))
 
-	rootCommand.MarkFlagsMutuallyExclusive("skip-verify", "strict-tls")
-	rootCommand.MarkFlagsMutuallyExclusive("quiet", "verbose")
+	rootCommand.MarkFlagsMutuallyExclusive(flagSkipVerify, flagStrictTLS)
+	rootCommand.MarkFlagsMutuallyExclusive(flagQuiet, flagVerbose)
 }
 
 func initLocalFlags() {
 	bundlerCommand.Flags().
-		StringP("config-file", "f", "bundle.yaml", "config file for bundler (default: bundle.yaml in current directory")
-	bundlerCommand.Flags().StringP("output", "o", "pkg", "output directory for generated files")
-	csrPubCommand.Flags().Bool("stdout", false, "write PEM-encoded CSR to stdout instead of a file")
-	dumpCommand.Flags().BoolP("leaf-only", "l", false, "only display the leaf certificate")
-	dumpCommand.Flags().BoolP("show-hashes", "s", false, "show hashes of all certificates in the chain")
+		StringP(flagConfigFile, "f", "bundle.yaml", "config file for bundler (default: bundle.yaml in current directory")
+	bundlerCommand.Flags().StringP(flagOutput, "o", "pkg", "output directory for generated files")
+	csrPubCommand.Flags().Bool(flagStdout, false, "write PEM-encoded CSR to stdout instead of a file")
+	dumpCommand.Flags().BoolP(flagLeafOnly, "l", false, "only display the leaf certificate")
+	dumpCommand.Flags().BoolP(flagShowHashes, "s", false, "show hashes of all certificates in the chain")
 	expiryCommand.Flags().
-		DurationP("leeway", "p", verify.DefaultLeeway, "leeway for certificate expiry checks (e.g. 1h30m")
-	genCSRCommand.Flags().StringP("request", "f", "request.yaml", "YAML config file to use for self-signing")
-	genCSRCommand.Flags().StringP("key-file", "p", "", "optional private key for the CSR")
-	genKeyCommand.Flags().StringP("key-algo", "a", "ecdsa", "key type to generate (rsa or ec)")
-	genKeyCommand.Flags().IntP("key-size", "s", 521, "key size to generate (in bits)")
-	matchKeyCommand.Flags().StringP("cert-file", "c", "", "certificate file to match (PEM or DER format")
-	matchKeyCommand.Flags().StringP("key-file", "p", "", "key file to match")
-	pemCommand.Flags().StringP("binary-out", "b", "", "file to write extracted binary data from a PEM file")
-	pemCommand.Flags().StringP("pem-type", "t", "CERTIFICATE", "PEM type for output")
-	selfSignCommand.Flags().StringP("request", "f", "request.yaml", "YAML config file to use for self-signing")
-	selfSignCommand.Flags().StringP("selfsign-csr-file", "c", "", "CSR file to use for self-signing")
-	selfSignCommand.Flags().StringP("selfsign-key-file", "p", "", "key file to use for self-signing")
-	serialCommand.Flags().BoolP("numeric", "n", false, "display serial numbers as integers")
-	signCSRCommand.Flags().StringP("cert-file", "c", "", "certificate file to use for signing")
-	signCSRCommand.Flags().StringP("request", "f", "request.yaml", "YAML config file to use for certificate signing")
-	signCSRCommand.Flags().StringP("key-file", "p", "", "key file to match")
-	skiCommand.Flags().BoolP("should-match", "m", false, "all SKIs should match")
-	stealchainCommand.Flags().StringP("sni-name", "s", "", "SNI name to use when connecting")
-	tlsInfoCommand.Flags().StringP("sni-name", "s", "", "SNI name to use when connecting")
+		DurationP(flagLeeway, "p", verify.DefaultLeeway, "leeway for certificate expiry checks (e.g. 1h30m")
+	genCSRCommand.Flags().StringP(flagRequest, "f", "request.yaml", "YAML config file to use for self-signing")
+	genCSRCommand.Flags().StringP(flagKeyFile, "p", "", "optional private key for the CSR")
+	genKeyCommand.Flags().StringP(flagKeyAlgo, "a", "ecdsa", "key type to generate (rsa or ec)")
+	genKeyCommand.Flags().IntP(flagKeySize, "s", 521, "key size to generate (in bits)")
+	matchKeyCommand.Flags().StringP(flagCertFile, "c", "", "certificate file to match (PEM or DER format")
+	matchKeyCommand.Flags().StringP(flagKeyFile, "p", "", "key file to match")
+	pemCommand.Flags().StringP(flagBinaryOut, "b", "", "file to write extracted binary data from a PEM file")
+	pemCommand.Flags().StringP(flagPEMType, "t", "CERTIFICATE", "PEM type for output")
+	selfSignCommand.Flags().StringP(flagRequest, "f", "request.yaml", "YAML config file to use for self-signing")
+	selfSignCommand.Flags().StringP(flagCSRFile, "c", "", "CSR file to use for self-signing")
+	selfSignCommand.Flags().StringP(flagKeyFile, "p", "", "key file to use for self-signing")
+	serialCommand.Flags().BoolP(flagNumeric, "n", false, "display serial numbers as integers")
+	signCSRCommand.Flags().StringP(flagCertFile, "c", "", "certificate file to use for signing")
+	signCSRCommand.Flags().StringP(flagRequest, "f", "request.yaml", "YAML config file to use for certificate signing")
+	signCSRCommand.Flags().StringP(flagKeyFile, "p", "", "key file to match")
+	skiCommand.Flags().BoolP(flagShouldMatch, "m", false, "all SKIs should match")
+	stealchainCommand.Flags().StringP(flagSNIName, "s", "", "SNI name to use when connecting")
+	tlsInfoCommand.Flags().StringP(flagSNIName, "s", "", "SNI name to use when connecting")
 
-	verifyCommand.Flags().BoolP("force-intermediate-bundle", "f", false, "force loading of intermediate bundle")
-	verifyCommand.Flags().BoolP("check-revocation", "r", false, "check revocation status")
+	verifyCommand.Flags().BoolP(flagForceIntBundle, "f", false, "force loading of intermediate bundle")
+	verifyCommand.Flags().BoolP(flagCheckRevocation, "r", false, "check revocation status")
 }
 
 func bindLocalFlags() {
-	viper.BindPFlag("config-file", bundlerCommand.Flags().Lookup("config-file"))
-	viper.BindPFlag("output", bundlerCommand.Flags().Lookup("output"))
-	viper.BindPFlag("stdout", csrPubCommand.Flags().Lookup("stdout"))
-	viper.BindPFlag("leaf-only", dumpCommand.Flags().Lookup("leaf-only"))
-	viper.BindPFlag("show-hashes", dumpCommand.Flags().Lookup("show-hashes"))
-	viper.BindPFlag("leeway", expiryCommand.Flags().Lookup("leeway"))
-	viper.BindPFlag("gencsr-request", genCSRCommand.Flags().Lookup("request"))
-	viper.BindPFlag("gencsr-key-file", genCSRCommand.Flags().Lookup("key-file"))
-	viper.BindPFlag("key-algo", genKeyCommand.Flags().Lookup("key-algo"))
-	viper.BindPFlag("key-size", genKeyCommand.Flags().Lookup("key-size"))
-	viper.BindPFlag("cert-file", matchKeyCommand.Flags().Lookup("cert-file"))
-	viper.BindPFlag("key-file", matchKeyCommand.Flags().Lookup("key-file"))
-	viper.BindPFlag("binary-out", pemCommand.Flags().Lookup("binary-out"))
-	viper.BindPFlag("pem-type", pemCommand.Flags().Lookup("pem-type"))
-	viper.BindPFlag("request", selfSignCommand.Flags().Lookup("request"))
-	viper.BindPFlag("selfsign-csr-file", selfSignCommand.Flags().Lookup("selfsign-csr"))
-	viper.BindPFlag("selfsign-key-file", selfSignCommand.Flags().Lookup("selfsign-key-file"))
-	viper.BindPFlag("numeric", serialCommand.Flags().Lookup("numeric"))
-	viper.BindPFlag("signing-cert-file", signCSRCommand.Flags().Lookup("cert-file"))
-	viper.BindPFlag("signing-request", signCSRCommand.Flags().Lookup("request"))
-	viper.BindPFlag("signing-key-file", signCSRCommand.Flags().Lookup("key-file"))
-	viper.BindPFlag("should-match", skiCommand.Flags().Lookup("should-match"))
-	viper.BindPFlag("sni-name", stealchainCommand.Flags().Lookup("sni-name"))
-	viper.BindPFlag("sni-name", tlsInfoCommand.Flags().Lookup("sni-name"))
-	viper.BindPFlag("force-intermediate-bundle", verifyCommand.Flags().Lookup("force-intermediate-bundle"))
-	viper.BindPFlag("check-revocation", verifyCommand.Flags().Lookup("check-revocation"))
+	viper.BindPFlag(flagConfigFile, bundlerCommand.Flags().Lookup(flagConfigFile))
+	viper.BindPFlag(flagOutput, bundlerCommand.Flags().Lookup(flagOutput))
+	viper.BindPFlag(flagStdout, csrPubCommand.Flags().Lookup(flagStdout))
+	viper.BindPFlag(flagLeafOnly, dumpCommand.Flags().Lookup(flagLeafOnly))
+	viper.BindPFlag(flagShowHashes, dumpCommand.Flags().Lookup(flagShowHashes))
+	viper.BindPFlag(flagLeeway, expiryCommand.Flags().Lookup(flagLeeway))
+	viper.BindPFlag(flagRequest, genCSRCommand.Flags().Lookup(flagRequest))
+	viper.BindPFlag(flagKeyFile, genCSRCommand.Flags().Lookup(flagKeyFile))
+	viper.BindPFlag(flagKeyAlgo, genKeyCommand.Flags().Lookup(flagKeyAlgo))
+	viper.BindPFlag(flagKeySize, genKeyCommand.Flags().Lookup(flagKeySize))
+	viper.BindPFlag(flagCertFile, matchKeyCommand.Flags().Lookup(flagCertFile))
+	viper.BindPFlag(flagKeyFile, matchKeyCommand.Flags().Lookup(flagKeyFile))
+	viper.BindPFlag(flagBinaryOut, pemCommand.Flags().Lookup(flagBinaryOut))
+	viper.BindPFlag(flagPEMType, pemCommand.Flags().Lookup(flagPEMType))
+	viper.BindPFlag(flagRequest, selfSignCommand.Flags().Lookup(flagRequest))
+	viper.BindPFlag(flagCSRFile, selfSignCommand.Flags().Lookup(flagCSRFile))
+	viper.BindPFlag(flagKeyFile, selfSignCommand.Flags().Lookup(flagKeyFile))
+	viper.BindPFlag(flagNumeric, serialCommand.Flags().Lookup(flagNumeric))
+	viper.BindPFlag(flagCertFile, signCSRCommand.Flags().Lookup(flagCertFile))
+	viper.BindPFlag(flagRequest, signCSRCommand.Flags().Lookup(flagRequest))
+	viper.BindPFlag(flagKeyFile, signCSRCommand.Flags().Lookup(flagKeyFile))
+	viper.BindPFlag(flagShouldMatch, skiCommand.Flags().Lookup(flagShouldMatch))
+	viper.BindPFlag(flagSNIName, stealchainCommand.Flags().Lookup(flagSNIName))
+	viper.BindPFlag(flagSNIName, tlsInfoCommand.Flags().Lookup(flagSNIName))
+	viper.BindPFlag(flagForceIntBundle, verifyCommand.Flags().Lookup(flagForceIntBundle))
+	viper.BindPFlag(flagCheckRevocation, verifyCommand.Flags().Lookup(flagCheckRevocation))
 
-	pemCommand.MarkFlagsMutuallyExclusive("binary-out", "pem-type")
-	pemCommand.MarkFlagsOneRequired("binary-out", "pem-type")
+	pemCommand.MarkFlagsMutuallyExclusive(flagBinaryOut, flagPEMType)
+	pemCommand.MarkFlagsOneRequired(flagBinaryOut, flagPEMType)
 
-	caSignedCommand.MarkFlagRequired("ca")
-	genCSRCommand.MarkFlagRequired("request")
-	matchKeyCommand.MarkFlagRequired("cert-file")
-	matchKeyCommand.MarkFlagRequired("key-file")
-	selfSignCommand.MarkFlagRequired("request")
-	signCSRCommand.MarkFlagRequired("signing-cert-file")
-	signCSRCommand.MarkFlagRequired("signing-request")
-	signCSRCommand.MarkFlagRequired("signing-key-file")
+	caSignedCommand.MarkFlagRequired(flagCA)
+	genCSRCommand.MarkFlagRequired(flagRequest)
+	matchKeyCommand.MarkFlagRequired(flagCertFile)
+	matchKeyCommand.MarkFlagRequired(flagKeyFile)
+	selfSignCommand.MarkFlagRequired(flagRequest)
+	signCSRCommand.MarkFlagRequired(flagCertFile)
+	signCSRCommand.MarkFlagRequired(flagRequest)
+	signCSRCommand.MarkFlagRequired(flagKeyFile)
 }
 
 func init() {

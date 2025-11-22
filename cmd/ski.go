@@ -34,7 +34,7 @@ Use --display-mode to control hex formatting of the SKI (default: lower).`,
 				matchSKI = keySKI
 			}
 
-			if viper.GetBool("should-match") && matchSKI != keySKI {
+			if viper.GetBool(flagShouldMatch) && matchSKI != keySKI {
 				_, _ = lib.Warnx("%s: SKI mismatch (%s != %s)",
 					path, matchSKI, keySKI)
 			}

@@ -21,7 +21,7 @@ var serialCommand = &cobra.Command{
 		tcfg, err := tlsConfig()
 		die.If(err)
 
-		numeric := viper.GetBool("numeric")
+		numeric := viper.GetBool(flagNumeric)
 		mode := displayMode()
 
 		for _, arg := range args {

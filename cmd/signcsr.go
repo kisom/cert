@@ -39,19 +39,19 @@ var signCSRCommand = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		setMsg()
 
-		msg.Vprintf("loading ca cert: %s\n", viper.GetString("signing-cert-file"))
+		msg.Vprintf("loading ca cert: %s\n", viper.GetString(flagCertFile))
 
-		caCert, err := certlib.LoadCertificate(viper.GetString("signing-cert-file"))
+		caCert, err := certlib.LoadCertificate(viper.GetString(flagCertFile))
 		die.If(err)
 
-		msg.Vprintf("loading key: %s\n", viper.GetString("signing-key-file"))
+		msg.Vprintf("loading key: %s\n", viper.GetString(flagKeyFile))
 
-		priv, err := certlib.LoadPrivateKey(viper.GetString("signing-key-file"))
+		priv, err := certlib.LoadPrivateKey(viper.GetString(flagKeyFile))
 		die.If(err)
 
-		msg.Vprintf("loading config: %s\n", viper.GetString("signing-request"))
+		msg.Vprintf("loading config: %s\n", viper.GetString(flagRequest))
 
-		cfg, err := loadCertificateRequest(viper.GetString("signing-request"))
+		cfg, err := loadCertificateRequest(viper.GetString(flagRequest))
 		die.If(err)
 
 		var cert *x509.Certificate

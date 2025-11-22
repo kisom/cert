@@ -41,13 +41,13 @@ Use --leaf-only to print only the leaf certificate when connecting to a host.`,
 				continue
 			}
 
-			if viper.GetBool("leaf-only") {
-				dump.DisplayCert(os.Stdout, certs[0], viper.GetBool("show-hashes"))
+			if viper.GetBool(flagLeafOnly) {
+				dump.DisplayCert(os.Stdout, certs[0], viper.GetBool(flagShowHashes))
 				continue
 			}
 
 			for i := range certs {
-				dump.DisplayCert(os.Stdout, certs[i], viper.GetBool("show-hashes"))
+				dump.DisplayCert(os.Stdout, certs[i], viper.GetBool(flagShowHashes))
 			}
 		}
 	},

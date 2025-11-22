@@ -29,14 +29,14 @@ with -b.
 		fileData, err := os.ReadFile(path)
 		die.If(err)
 
-		if viper.IsSet("pem-type") {
+		if viper.IsSet(flagPEMType) {
 			if viper.GetString("pem-output") != "" {
 				die.With("no PEM type specified")
 			}
 
 			msg.Vprintf("encoding %s as PEM...\n", path)
 			block := &pem.Block{
-				Type:  viper.GetString("pem-type"),
+				Type:  viper.GetString(flagPEMType),
 				Bytes: fileData,
 			}
 
@@ -46,10 +46,10 @@ with -b.
 			return
 		}
 
-		msg.Vprintf("dumping binary data from %s to in %s...\n", path, viper.GetString("binary-out"))
+		msg.Vprintf("dumping binary data from %s to in %s...\n", path, viper.GetString(flagBinaryOut))
 
 		block, _ := pem.Decode(fileData)
-		err = os.WriteFile(viper.GetString("binary-out"), block.Bytes, 0644)
+		err = os.WriteFile(viper.GetString(flagBinaryOut), block.Bytes, 0644)
 		die.If(err)
 
 		msg.Qprintln("OK.")

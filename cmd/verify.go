@@ -30,12 +30,12 @@ and intermediate bundles. Optionally check revocation.
 		)
 
 		opts := &verify.Opts{
-			CheckRevocation:    viper.GetBool("check-revocation"),
-			ForceIntermediates: viper.GetBool("force-intermediate-bundle"),
-			Verbose:            viper.GetBool("verbose"),
+			CheckRevocation:    viper.GetBool(flagCheckRevocation),
+			ForceIntermediates: viper.GetBool(flagForceIntBundle),
+			Verbose:            viper.GetBool(flagVerbose),
 		}
 
-		caFile := viper.GetString("ca")
+		caFile := viper.GetString(flagCA)
 		if caFile != "" {
 			msg.Vprintf("loading CA certificates from %s\n", caFile)
 
@@ -43,7 +43,7 @@ and intermediate bundles. Optionally check revocation.
 			die.If(err)
 		}
 
-		intFile := viper.GetString("intermediates-file")
+		intFile := viper.GetString(flagIntermediatesFile)
 		if intFile != "" {
 
 			msg.Vprintf("loading intermediate certificates from %s\n", intFile)

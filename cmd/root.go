@@ -16,15 +16,6 @@ var rootCommand = &cobra.Command{
 certificates and connections. It consolidates several utilities from kisom/goutils
 into a single binary using the Cobra CLI framework. Use --help on any subcommand
 to see details and examples.
-
-The display modes for hex-encoded data can be controlled with the 
---display-mode flag. Valid settings are:
-  + lower (default)
-  + upper
-  + lcolon (display as colon-separated lowercase hex pairs)
-  + uccolon (display as colon-separated uppercase hex pairs)
-  + bytes (display as a Go byte slice)
-  + base64 (display as base64)"
 `,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:

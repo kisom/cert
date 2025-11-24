@@ -32,6 +32,7 @@ const (
 	flagPEMType         = "pem-type"
 	flagCSRFile         = "csr-file"
 	flagNumeric         = "numeric"
+	flagShort           = "short"
 	flagShouldMatch     = "should-match"
 	flagSNIName         = "sni-name"
 	flagForceIntBundle  = "force-intermediate-bundle"

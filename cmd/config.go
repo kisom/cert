@@ -139,6 +139,7 @@ func initLocalFlags() {
 	dumpCommand.Flags().BoolP(flagShowHashes, "s", false, "show hashes of all certificates in the chain")
 	expiryCommand.Flags().
 		DurationP(flagLeeway, "p", verify.DefaultLeeway, "leeway for certificate expiry checks (e.g. 1h30m")
+	expiryCommand.Flags().Bool(flagShort, false, "short certificate names")
 	genCSRCommand.Flags().StringP(flagRequest, "f", "request.yaml", "YAML config file to use for self-signing")
 	genCSRCommand.Flags().StringP(flagKeyFile, "p", "", "optional private key for the CSR")
 	genKeyCommand.Flags().StringP(flagKeyAlgo, "a", "ecdsa", "key type to generate (rsa or ec)")
@@ -170,6 +171,7 @@ func bindLocalFlags() {
 	viper.BindPFlag(flagLeafOnly, dumpCommand.Flags().Lookup(flagLeafOnly))
 	viper.BindPFlag(flagShowHashes, dumpCommand.Flags().Lookup(flagShowHashes))
 	viper.BindPFlag(flagLeeway, expiryCommand.Flags().Lookup(flagLeeway))
+	viper.BindPFlag(flagShort, expiryCommand.Flags().Lookup(flagShort))
 	viper.BindPFlag(flagRequest, genCSRCommand.Flags().Lookup(flagRequest))
 	viper.BindPFlag(flagKeyFile, genCSRCommand.Flags().Lookup(flagKeyFile))
 	viper.BindPFlag(flagKeyAlgo, genKeyCommand.Flags().Lookup(flagKeyAlgo))

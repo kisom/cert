@@ -40,7 +40,14 @@ only certificates expiring within the window are displayed.`,
 						lib.Warn(err, "certificate is expiring")
 					}
 				} else {
-					msg.Printf("%s expires on %s (in %s)\n", check.Name(),
+					name := check.Name()
+					if viper.GetBool(flagShort) {
+						name = cert.Subject.CommonName
+						if name == "" {
+							name = target
+						}
+					}
+					msg.Printf("%s expires on %s (in %s)\n", name,
 						cert.NotAfter, check.Expiry())
 				}
 			}

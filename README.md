@@ -51,7 +51,7 @@ Installation
 - There is a homebrew tap available:
 
 ```
-  homebrew tap kisom/homebrew-tap
+  brew tap kisom/homebrew-tap
   brew install cert
 ```
 

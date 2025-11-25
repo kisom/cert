@@ -151,6 +151,9 @@ Notes
   - Archive filenames use the group name, not individual chain names
   - If both include_single and include_individual are true, archives contain both
 `,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagConfigFile, flagOutput)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		setMsg()
 

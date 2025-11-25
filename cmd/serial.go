@@ -15,9 +15,10 @@ var serialCommand = &cobra.Command{
 	Use:   "serial",
 	Short: "Display serial number for a certificate",
 	Long:  `Display the serial number for a certificate.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagNumeric)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		tcfg, err := tlsConfig()
 		die.If(err)
 

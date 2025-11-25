@@ -19,9 +19,10 @@ var csrPubCommand = &cobra.Command{
 	Use:   "csrpub",
 	Short: "Display public key from a CSR",
 	Long:  `Extract the public key from a CSR and write it to a PEM file.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagStdout)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		for _, fileName := range args {
 			in, err := os.ReadFile(fileName)
 			die.If(err)

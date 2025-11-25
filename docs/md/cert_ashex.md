@@ -1,19 +1,16 @@
-## cert filetype
+## cert ashex
 
-Display the file type of an X.509 file
-
-### Synopsis
-
-Display the file type of an X.509 file.
+Display a hex string as a number or vice versa
 
 ```
-cert filetype [flags]
+cert ashex [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help   help for filetype
+  -h, --help      help for ashex
+  -n, --numeric   display bytes as a number
 ```
 
 ### Options inherited from parent commands

@@ -36,9 +36,10 @@ func signCSR(
 var signCSRCommand = &cobra.Command{
 	Use:   "signcsr",
 	Short: "Sign a certificate signing request (CSR)",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagCertFile, flagKeyFile, flagRequest)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		msg.Vprintf("loading ca cert: %s\n", viper.GetString(flagCertFile))
 
 		caCert, err := certlib.LoadCertificate(viper.GetString(flagCertFile))

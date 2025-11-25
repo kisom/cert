@@ -22,7 +22,6 @@ validating PKI systems.
 
 Most of the subcommands have documentation.
 
-
 Requirements
 ------------
 

@@ -16,9 +16,10 @@ var matchKeyCommand = &cobra.Command{
 	Long: `Load a certificate and a private key and determine whether they
 correspond to each other. Returns non-zero on mismatch unless --verbose is set
 and a match is found.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagCertFile, flagKeyFile)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		msg.Vprintf("loading certificate from %s\n", viper.GetString(flagCertFile))
 		cert, err := certlib.LoadCertificate(viper.GetString(flagCertFile))
 		die.If(err)

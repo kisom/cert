@@ -71,6 +71,13 @@ func setMsg() {
 	)
 }
 
+func cmdInit(cmd *cobra.Command, flags ...string) {
+	for _, flag := range flags {
+		viper.BindPFlag(flag, cmd.Flags().Lookup(flag))
+	}
+	setMsg()
+}
+
 func printKeySpec(ks certgen.KeySpec) string {
 	if strings.ToLower(ks.Algorithm) == "ed25519" {
 		return "ed25519"
@@ -86,7 +93,7 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		path := filepath.Join(home, ".config", "goutils")
+		path := filepath.Join(home, ".config")
 
 		viper.AddConfigPath(path)
 		viper.SetConfigType("yaml")
@@ -130,6 +137,7 @@ func initRootFlags() {
 }
 
 func initLocalFlags() {
+	asHexCommand.Flags().BoolP(flagNumeric, "n", false, "display bytes as a number")
 	bundlerCommand.Flags().
 		StringP(flagConfigFile, "f", "bundle.yaml", "config file for bundler (default: bundle.yaml in current directory")
 	bundlerCommand.Flags().StringP(flagOutput, "o", "pkg", "output directory for generated files")
@@ -158,41 +166,11 @@ func initLocalFlags() {
 	skiCommand.Flags().BoolP(flagShouldMatch, "m", false, "all SKIs should match")
 	stealchainCommand.Flags().StringP(flagSNIName, "s", "", "SNI name to use when connecting")
 	tlsInfoCommand.Flags().StringP(flagSNIName, "s", "", "SNI name to use when connecting")
-
 	verifyCommand.Flags().BoolP(flagForceIntBundle, "f", false, "force loading of intermediate bundle")
 	verifyCommand.Flags().BoolP(flagCheckRevocation, "r", false, "check revocation status")
 }
 
 func bindLocalFlags() {
-	viper.BindPFlag(flagConfigFile, bundlerCommand.Flags().Lookup(flagConfigFile))
-	viper.BindPFlag(flagOutput, bundlerCommand.Flags().Lookup(flagOutput))
-	viper.BindPFlag(flagStdout, csrPubCommand.Flags().Lookup(flagStdout))
-	viper.BindPFlag(flagOutput, docgenCommand.Flags().Lookup(flagOutput))
-	viper.BindPFlag(flagLeafOnly, dumpCommand.Flags().Lookup(flagLeafOnly))
-	viper.BindPFlag(flagShowHashes, dumpCommand.Flags().Lookup(flagShowHashes))
-	viper.BindPFlag(flagLeeway, expiryCommand.Flags().Lookup(flagLeeway))
-	viper.BindPFlag(flagShort, expiryCommand.Flags().Lookup(flagShort))
-	viper.BindPFlag(flagRequest, genCSRCommand.Flags().Lookup(flagRequest))
-	viper.BindPFlag(flagKeyFile, genCSRCommand.Flags().Lookup(flagKeyFile))
-	viper.BindPFlag(flagKeyAlgo, genKeyCommand.Flags().Lookup(flagKeyAlgo))
-	viper.BindPFlag(flagKeySize, genKeyCommand.Flags().Lookup(flagKeySize))
-	viper.BindPFlag(flagCertFile, matchKeyCommand.Flags().Lookup(flagCertFile))
-	viper.BindPFlag(flagKeyFile, matchKeyCommand.Flags().Lookup(flagKeyFile))
-	viper.BindPFlag(flagBinaryOut, pemCommand.Flags().Lookup(flagBinaryOut))
-	viper.BindPFlag(flagPEMType, pemCommand.Flags().Lookup(flagPEMType))
-	viper.BindPFlag(flagRequest, selfSignCommand.Flags().Lookup(flagRequest))
-	viper.BindPFlag(flagCSRFile, selfSignCommand.Flags().Lookup(flagCSRFile))
-	viper.BindPFlag(flagKeyFile, selfSignCommand.Flags().Lookup(flagKeyFile))
-	viper.BindPFlag(flagNumeric, serialCommand.Flags().Lookup(flagNumeric))
-	viper.BindPFlag(flagCertFile, signCSRCommand.Flags().Lookup(flagCertFile))
-	viper.BindPFlag(flagRequest, signCSRCommand.Flags().Lookup(flagRequest))
-	viper.BindPFlag(flagKeyFile, signCSRCommand.Flags().Lookup(flagKeyFile))
-	viper.BindPFlag(flagShouldMatch, skiCommand.Flags().Lookup(flagShouldMatch))
-	viper.BindPFlag(flagSNIName, stealchainCommand.Flags().Lookup(flagSNIName))
-	viper.BindPFlag(flagSNIName, tlsInfoCommand.Flags().Lookup(flagSNIName))
-	viper.BindPFlag(flagForceIntBundle, verifyCommand.Flags().Lookup(flagForceIntBundle))
-	viper.BindPFlag(flagCheckRevocation, verifyCommand.Flags().Lookup(flagCheckRevocation))
-
 	pemCommand.MarkFlagsMutuallyExclusive(flagBinaryOut, flagPEMType)
 	pemCommand.MarkFlagsOneRequired(flagBinaryOut, flagPEMType)
 
@@ -215,6 +193,7 @@ func init() {
 }
 
 func init() {
+	rootCommand.AddCommand(asHexCommand)
 	rootCommand.AddCommand(bundlerCommand)
 	rootCommand.AddCommand(caSignedCommand)
 	rootCommand.AddCommand(csrPubCommand)

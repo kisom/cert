@@ -14,9 +14,10 @@ import (
 var docgenCommand = &cobra.Command{
 	Use:   "docgen",
 	Short: "Generate documentation for cert",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagOutput)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		msg.Qprintln("generating man pages...")
 		manPath := filepath.Join(viper.GetString(flagOutput), "man1")
 		err := os.MkdirAll(manPath, 0755)

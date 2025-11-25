@@ -21,9 +21,10 @@ are compared and a warning is printed if any differ. The output includes the
 input path, SKI, key type, and file type.
 
 Use --display-mode to control hex formatting of the SKI (default: lower).`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagShouldMatch)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		tcfg, tcfgErr := tlsConfig()
 		die.If(tcfgErr)
 

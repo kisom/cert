@@ -17,9 +17,10 @@ var expiryCommand = &cobra.Command{
 	Short: "Display certificate expiry date",
 	Long: `Display the expiry date of a certificate file. If quiet mode is enabled,
 only certificates expiring within the window are displayed.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagLeeway)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		tcfg, err := tlsConfig()
 		die.If(err)
 

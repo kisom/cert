@@ -22,9 +22,10 @@ var tlsInfoCommand = &cobra.Command{
 TLS version, cipher suite, and peer certificate subjects/issuers. Note: the
 connection is made with InsecureSkipVerify=true to retrieve details; this does
 not validate the peer.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagSNIName)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		for _, target := range args {
 			host, err := hosts.ParseHost(target)
 			if err != nil {

@@ -20,9 +20,10 @@ var verifyCommand = &cobra.Command{
 TLS endpoints (host:port) or certificate files. You can supply custom root CA
 and intermediate bundles. Optionally check revocation.
 `,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagCheckRevocation, flagForceIntBundle)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		var (
 			roots, ints *x509.CertPool
 			err         error

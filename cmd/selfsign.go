@@ -17,9 +17,10 @@ var selfSignCommand = &cobra.Command{
 	Use:   "selfsign",
 	Short: "Generate a self-signed certificate",
 	Long:  `Generate a self-signed certificate.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagKeyFile, flagCSRFile, flagRequest)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		configFile := viper.GetString(flagRequest)
 		msg.Vprintf("loading request from %s\n", configFile)
 		if configFile == "" {

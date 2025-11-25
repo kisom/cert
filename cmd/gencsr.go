@@ -15,9 +15,10 @@ var genCSRCommand = &cobra.Command{
 	Use:   "gencsr",
 	Short: "Generate a certificate signing request",
 	Long:  `Generate a certificate signing request.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagKeyFile, flagRequest)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		msg.Dprintf("loading config from %s\n", viper.GetString(flagRequest))
 		cfg, err := loadCertificateRequest(viper.GetString(flagRequest))
 		die.If(err)

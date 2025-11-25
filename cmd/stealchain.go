@@ -20,9 +20,10 @@ certificate chain to a local PEM file named <host>.pem.
 
 Use --sni-name to override the SNI name used for the TLS handshake. Root CAs
 are taken from --ca if provided, otherwise from the system pool.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagSNIName)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		var roots *x509.CertPool
 
 		tcfg, err := tlsConfig()

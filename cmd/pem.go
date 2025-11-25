@@ -18,9 +18,10 @@ var pemCommand = &cobra.Command{
 Alternatively, dump the binary data in a PEM file by specifying the file name
 with -b.
 `,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagPEMType, flagBinaryOut)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		if len(args) != 1 {
 			die.With("expected exactly one filename")
 		}

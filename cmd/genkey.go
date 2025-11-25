@@ -13,9 +13,10 @@ var genKeyCommand = &cobra.Command{
 	Use:   "genkey",
 	Short: "Generate a private key",
 	Long:  `Generate a private key.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagKeyAlgo, flagKeySize)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		keyAlgo := certgen.KeySpec{
 			Algorithm: viper.GetString(flagKeyAlgo),
 			Size:      viper.GetInt(flagKeySize),

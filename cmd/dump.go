@@ -24,9 +24,10 @@ Targets may be:
 - A path to a PEM/DER certificate file — the certificate is displayed.
 
 Use --leaf-only to print only the leaf certificate when connecting to a host.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cmdInit(cmd, flagLeafOnly, flagShowHashes)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		setMsg()
-
 		tcfg, err := tlsConfig()
 		cobra.CheckErr(err)
 

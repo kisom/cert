@@ -39,7 +39,6 @@ a remote host.
 
 ### SEE ALSO
 
-* [cert ashex](cert_ashex.md)	 - Display a hex string as a number or vice versa
 * [cert bundler](cert_bundler.md)	 - Create archives of certificate chains
 * [cert ca-signed](cert_ca-signed.md)	 - Check whether a certificate is signed by a CA
 * [cert completion](cert_completion.md)	 - Generate the autocompletion script for the specified shell
@@ -51,6 +50,7 @@ a remote host.
 * [cert filetype](cert_filetype.md)	 - Display the file type of an X.509 file
 * [cert gencsr](cert_gencsr.md)	 - Generate a certificate signing request
 * [cert genkey](cert_genkey.md)	 - Generate a private key
+* [cert hexnum](cert_hexnum.md)	 - Display a hex string as a number or vice versa
 * [cert matchkey](cert_matchkey.md)	 - Check whether a certificate and private key match
 * [cert pem](cert_pem.md)	 - Encode or decode PEM files
 * [cert selfsign](cert_selfsign.md)	 - Generate a self-signed certificate

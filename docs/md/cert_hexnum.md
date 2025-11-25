@@ -1,15 +1,15 @@
-## cert ashex
+## cert hexnum
 
 Display a hex string as a number or vice versa
 
 ```
-cert ashex [flags]
+cert hexnum [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help      help for ashex
+  -h, --help      help for hexnum
   -n, --numeric   display bytes as a number
 ```
 

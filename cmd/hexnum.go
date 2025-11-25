@@ -37,8 +37,8 @@ func showNumberAsHex(arg string) {
 	msg.Printf("%s: %s\n", arg, lib.HexEncode(n.Bytes(), displayMode()))
 }
 
-var asHexCommand = &cobra.Command{
-	Use:   "ashex",
+var hexNumCommand = &cobra.Command{
+	Use:   "hexnum",
 	Short: "Display a hex string as a number or vice versa",
 	PreRun: func(cmd *cobra.Command, args []string) {
 		cmdInit(cmd, flagNumeric)

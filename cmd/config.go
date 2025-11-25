@@ -137,7 +137,7 @@ func initRootFlags() {
 }
 
 func initLocalFlags() {
-	asHexCommand.Flags().BoolP(flagNumeric, "n", false, "display bytes as a number")
+	hexNumCommand.Flags().BoolP(flagNumeric, "n", false, "display bytes as a number")
 	bundlerCommand.Flags().
 		StringP(flagConfigFile, "f", "bundle.yaml", "config file for bundler (default: bundle.yaml in current directory")
 	bundlerCommand.Flags().StringP(flagOutput, "o", "pkg", "output directory for generated files")
@@ -193,7 +193,6 @@ func init() {
 }
 
 func init() {
-	rootCommand.AddCommand(asHexCommand)
 	rootCommand.AddCommand(bundlerCommand)
 	rootCommand.AddCommand(caSignedCommand)
 	rootCommand.AddCommand(csrPubCommand)
@@ -204,6 +203,7 @@ func init() {
 	rootCommand.AddCommand(fileTypeCommand)
 	rootCommand.AddCommand(genCSRCommand)
 	rootCommand.AddCommand(genKeyCommand)
+	rootCommand.AddCommand(hexNumCommand)
 	rootCommand.AddCommand(matchKeyCommand)
 	rootCommand.AddCommand(pemCommand)
 	rootCommand.AddCommand(selfSignCommand)
